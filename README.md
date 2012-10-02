@@ -11,4 +11,5 @@ Install
   # exit from root shell
   mkdir sqlite
   ./manage.py syncdb
+  ./manage.py runserver
 ```
