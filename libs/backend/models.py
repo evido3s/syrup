@@ -15,12 +15,12 @@ class Node(models.Model):
         elif self.typ == 2:
             return u"Connector%d" % ( self.id )
 
-    def create_item(self, template):
-        """class method creating item-node from template, returning the new node"""
+    def create_item(self):
+        """should be called on a template, creates instance of the template, returning the new node"""
         # create new node
         item = Node.objects.create(typ = 1)
         # create link to primary template
-        item.template.create(template = template, primary = True)
+        item.template.create(template = self, primary = True)
         return item
 
     def list_linked(self):
@@ -41,6 +41,9 @@ class ParamStr(models.Model):
     name = models.CharField(max_length = 64)
     value = models.CharField(max_length = 1024)
     structural = models.BooleanField(default = False)
+
+    def __unicode__(self):
+        return u"%s = %s%s" % ( self.name, self.value, u" * " if self.structural else u"" )
 
 class Link(models.Model):
     node = models.ForeignKey(Node, related_name = 'link')
