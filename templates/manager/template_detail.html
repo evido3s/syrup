@@ -1,13 +1,25 @@
 <html><head></head><body>
 <h1>{{ node }} detail</h1>
 <h2>parameters</h2>
-<ul>
-    {% for param in params %}
-        <li>
-            {{ param }}
-        </li>
-    {% empty %}
-        <li><i>No parameters found.</i></li>
-    {% endfor %}
-</ul>
+<form action="{% url manager.views.template_add_param %}" method="post">
+    {% csrf_token %}
+    <ul>
+        {% for param in params %}
+            <li>
+                {{ param }} <a href="{% url manager.views.template_del_param param.id %}"
+                    title="delete parameter">[X]</a>
+            </li>
+        {% empty %}
+            <li><i>No parameters found.</i></li>
+        {% endfor %}
+    </ul>
+    <input type="hidden" name="template_id" value="{{ node.id }}" />
+    <label for="param_name">name:</label>
+    <input type="text" name="param_name" id="param_name" value="" />
+    <label for="param_value">value:</label>
+    <input type="text" name="param_value" id="param_value" value="" />
+    <input type="checkbox" name="param_primary" id="param_primary" value="x" />
+    <label for="param_primary">primary</label>
+    <input type="submit" name="sub" id="submit" value="Add" />
+</form>
 </body>

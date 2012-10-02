@@ -1,0 +1,11 @@
+<html><head></head><body>
+<h1>Message</h1>
+<p>{{ msg }}</p>
+<p>
+{% if goto %}
+    <a href="{{ goto }}">continue</a>
+{% else %}
+    <a href="/manager/">continue</a>
+{% endif %}
+</p>
+</body>
