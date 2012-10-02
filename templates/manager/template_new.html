@@ -1,0 +1,10 @@
+<html><head></head><body>
+<h1>New template</h1>
+<form action="{% url manager.views.template_create %}" method="post">
+    {% csrf_token %}
+    <p>
+        <label for="newname">Name:</label>
+        <input type="text" name="newname" id="newname" />
+    </p>
+</form>
+</body>

@@ -1,7 +1,6 @@
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
-from decimal import *
 
 class Node(models.Model):
     typ = models.IntegerField()
@@ -9,9 +8,9 @@ class Node(models.Model):
 
     def __unicode__(self):
         if self.typ == 0:
-            return u"Template%d" % ( self.id )
+            return u"Template %s" % ( self.name() )
         elif self.typ == 1:
-            return u"Item%d" % ( self.id )
+            return u"Item %s" % ( self.name() )
         elif self.typ == 2:
             return u"Connector%d" % ( self.id )
 
@@ -35,15 +34,27 @@ class Node(models.Model):
         link.connector.connection.create(node = node)
         return link.connector
 
+    def name(self):
+        """Return object name (primary parameter of item or template_name of template)."""
+        if self.typ == 0:
+            return self.paramstr_set.filter(name = 'template_name').get().value
+        elif self.typ == 1:
+            return self.paramstr_set.filter(primary = True).get().value
+
+    def primary_template(self):
+        """Return primary template of node"""
+        return self.template.filter(primary = True).get().template
+
 class ParamStr(models.Model):
     node = models.ForeignKey(Node)
-    template = models.ForeignKey(Node, related_name = '+')
+    template = models.ForeignKey(Node, related_name = '+', blank = True, null = True)
     name = models.CharField(max_length = 64)
-    value = models.CharField(max_length = 1024)
+    value = models.CharField(max_length = 1024, blank = True, null = True)
     structural = models.BooleanField(default = False)
+    primary = models.BooleanField(default = False)
 
     def __unicode__(self):
-        return u"%s = %s%s" % ( self.name, self.value, u" * " if self.structural else u"" )
+        return u"%s = %s%s" % ( self.name, self.value, u" *" if self.structural else u"" )
 
 class Link(models.Model):
     node = models.ForeignKey(Node, related_name = 'link')

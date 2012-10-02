@@ -1,9 +1,9 @@
 <html><head></head><body>
+<h1>Nodes list</h1>
 <ul>
-    <h1>Nodes list</h1>
     {% for node in nodes %}
         <li>
-            {{ node }}
+            <a href="{% url manager.views.node_detail node.id %}">{{ node }}</a>
         </li>
     {% empty %}
         <li><i>No nodes found.</i></li>

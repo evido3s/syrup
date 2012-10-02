@@ -1,0 +1,13 @@
+<html><head></head><body>
+<h1>Templates list</h1>
+<p><a href="{% url manager.views.template_new %}">create new</a></p>
+<ul>
+    {% for node in nodes %}
+        <li>
+            <a href="{% url manager.views.template_detail node.id %}">{{ node }}</a>
+        </li>
+    {% empty %}
+        <li><i>No templates found.</i></li>
+    {% endfor %}
+</ul>
+</body>

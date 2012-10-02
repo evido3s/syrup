@@ -1,0 +1,13 @@
+<html><head></head><body>
+<h1>{{ node }} detail</h1>
+<h2>parameters</h2>
+<ul>
+    {% for param in params %}
+        <li>
+            {{ param }}
+        </li>
+    {% empty %}
+        <li><i>No parameters found.</i></li>
+    {% endfor %}
+</ul>
+</body>

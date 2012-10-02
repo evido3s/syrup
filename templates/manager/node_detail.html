@@ -1,5 +1,24 @@
 <html><head></head><body>
+<h1>{{ node }} detail</h1>
+<p>primary template: {{ node.primary_template }}</p>
+<h2>parameters</h2>
 <ul>
-    <h1>{{ node }} detail</h1>
+    {% for param in params %}
+        <li>
+            {{ param.template }}: {{ param }}
+        </li>
+    {% empty %}
+        <li><i>No parameters found.</i></li>
+    {% endfor %}
+</ul>
+<h2>connected objects</h2>
+<ul>
+    {% for connector,node in connected_nodes.items %}
+        <li>
+            {{ node }}</a>
+        </li>
+    {% empty %}
+        <li><i>No parameters found.</i></li>
+    {% endfor %}
 </ul>
 </body>
