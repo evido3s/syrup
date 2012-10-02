@@ -1,0 +1,11 @@
+<html><head></head><body>
+<ul>
+    {% for node in nodes %}
+        <li>
+            {{ node }}
+        </li>
+    {% empty %}
+        <li><i>No nodes found.</i></li>
+    {% endfor %}
+</ul>
+</body>
