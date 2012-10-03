@@ -1,0 +1,15 @@
+<html><head></head><body>
+<h1>New node</h1>
+<form action="{% url manager.views.node_create %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="template_id" value="{{ template.id }}" />
+    <p>{{ template }}</p>
+    <p>
+        <label for="newname">Primary parameter value ({{ primary_param.name }})</label>
+        <input type="text" name="newname" id="newname" value="{{ primary_param.value }}" />
+    </p>
+    <p>
+        <input type="submit" name="sub" id="submit" value="Create" />
+    </p>
+</form>
+</body>

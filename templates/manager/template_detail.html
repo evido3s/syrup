@@ -1,12 +1,14 @@
 <html><head></head><body>
 <h1>{{ node }} detail</h1>
+<p><a href="{% url manager.views.template_list %}">templates list</a></p>
+<p><a href="{% url manager.views.node_new template_id=node.id %}">create item from this template</a></p>
 <h2>parameters</h2>
 <form action="{% url manager.views.template_add_param %}" method="post">
     {% csrf_token %}
     <ul>
         {% for param in params %}
             <li>
-                {{ param }} <a href="{% url manager.views.template_del_param param.id %}"
+                {{ param }} <a href="{% url manager.views.node_del_param param.id %}"
                     title="delete parameter">[X]</a>
             </li>
         {% empty %}

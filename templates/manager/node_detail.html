@@ -1,24 +1,82 @@
 <html><head></head><body>
 <h1>{{ node }} detail</h1>
+<p><a href="{% url manager.views.node_list %}">items list</a></p>
+<h2>templates</h2>
 <p>primary template: {{ node.primary_template }}</p>
-<h2>parameters</h2>
+<form action="{% url manager.views.node_link_template %}" method="post">
+    {% csrf_token %}
+    <p>
+        Link template
+        <input type="hidden" name="node_id" value="{{node.id}}" />
+        <select name="template_id" id="template_id">
+        {% for template in template_list %}
+            <option value="{{template.id}}">{{ template }}</option>
+        {% endfor %}
+        </select>
+        <input type="submit" name="sub" value="Link" />
+    </p>
+</form>
 <ul>
-    {% for param in params %}
+    {% for template in templates %}
         <li>
-            {{ param.template }}: {{ param }}
+            {{ template }}
+            <a href="{% url manager.views.node_unlink_template node.id template.id %}" title="unlink template">[X]</a>
         </li>
     {% empty %}
-        <li><i>No parameters found.</i></li>
+        <li><i>No templates.</i></li>
     {% endfor %}
 </ul>
+<h2>parameters</h2>
+    <ul>
+        {% for param in params %}
+            <li>
+                {{ param.template }}: {{ param }}
+                {% if not param.primary %}
+                <a href="{% url manager.views.node_del_param param.id %}" title="delete parameter">[X]</a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li><i>No parameters.</i></li>
+        {% endfor %}
+    </ul>
+<form action="{% url manager.views.node_add_param %}" method="post">
+    {% csrf_token %}
+    <p>
+        Add parameter
+        <input type="hidden" name="node_id" value="{{node.id}}" />
+        <label for="param_id">name</label>
+        <select name="param_id" id="param_id">
+        {% for param in available_params %}
+            <option value="{{param.id}}">{{ param.template }}: {{ param.name }}</option>
+        {% endfor %}
+        </select>
+        <label for="param_value">value</label>
+        <input type="text" name="param_value" id="param_value" value="{{ param.value }}" />
+        <input type="submit" name="sub" value="Add" />
+    </p>
+</form>
 <h2>connected objects</h2>
+<form action="{% url manager.views.node_link %}" method="post">
+    {% csrf_token %}
+    <p>
+        Link with
+        <input type="hidden" name="node_id" value="{{node.id}}" />
+        <select name="link_node_id" id="link_node_id">
+        {% for link_node in node_list %}
+            <option value="{{link_node.id}}">{{ link_node }}</option>
+        {% endfor %}
+        </select>
+        <input type="submit" name="sub" value="Link" />
+    </p>
+</form>
 <ul>
-    {% for connector,node in connected_nodes.items %}
+    {% for connector,connected_node in connected_nodes.items %}
         <li>
-            {{ node }}</a>
+            <a href="{% url manager.views.node_detail node_id=connected_node.id %}">{{ connected_node }}</a>
+            <a href="{% url manager.views.node_unlink node.id connector.id %}" title="unlink with node">[X]</a>
         </li>
     {% empty %}
-        <li><i>No parameters found.</i></li>
+        <li><i>No connections.</i></li>
     {% endfor %}
 </ul>
 </body>

@@ -10,7 +10,7 @@ class Node(models.Model):
         if self.typ == 0:
             return u"Template %s" % ( self.get_name() )
         elif self.typ == 1:
-            return u"Item %s" % ( self.get_name() )
+            return u"%s %s" % ( self.primary_template().get_name(), self.get_name() )
         elif self.typ == 2:
             return u"Connector%d" % ( self.id )
 
@@ -18,8 +18,15 @@ class Node(models.Model):
     def create_template(name):
         """class method, creates and returns new template with parameter name"""
         template = Node.objects.create(typ = 0)
-        template.add_param(None, 'template_name', name, structural = True)
+        template.add_param(template, 'template_name', name, structural = True)
         return template
+
+    @staticmethod
+    def unlink(connector):
+        assert connector.typ == 2
+        for link in connector.connection.all():
+            link.delete()
+        connector.delete()
 
     def create_item(self):
         """should be called on a template, creates instance of the template, returning the new node"""
@@ -42,17 +49,60 @@ class Node(models.Model):
     def get_param(self, template, name):
         return self.paramstr_set.filter(template = template, name = name).get()
 
+    def get_primary_param(self):
+        if self.typ == 0:
+            return self.paramstr_set.filter(primary = True).get()
+        elif self.typ == 1:
+            return self.paramstr_set.filter(template = self.primary_template, primary = True).get()
+
+    def list_params(self):
+        """Returns QuerySet of all parameters of this node"""
+        return self.paramstr_set.all()
+
+    def list_available_params(self):
+        """Returns list of available parameters from all linked templates"""
+        params = list()
+        for template in self.list_templates():
+            for param in template.list_params():
+                params.append(param)
+        return params
+
     def list_linked(self):
         linked = dict()
         for link in self.link.all():
             linked[link.connector] = link.connector.connection.exclude(node = self).get().node
         return linked
 
+    def list_templates(self, incl_primary = True):
+        templates = list()
+        if incl_primary:
+            templates_queryset = self.template.all()
+        else:
+            templates_queryset = self.template.exclude(primary = True)
+        for link in templates_queryset:
+            templates.append(link.template)
+        return templates
+
     def link_with(self, node):
         """links with node, returning newly created connector"""
+        assert self.typ == 1 and node.typ == 1
         link = self.link.create(connector = Node.objects.create(typ=2))
         link.connector.connection.create(node = node)
         return link.connector
+
+    def link_template(self, template):
+        """links node with template"""
+        assert self.typ == 1 and template.typ == 0
+        link = self.template.create(template = template)
+
+    def unlink_template(self, template):
+        """unlinks node with template"""
+        assert self.typ == 1 and template.typ == 0
+        # delete template link
+        TemplateLink.objects.filter(node = self, template = template).get().delete()
+        # delete parameters comming from that template
+        for param in ParamStr.objects.filter(node = self, template = template):
+            param.delete()
 
     def get_name(self):
         """Return object name (primary parameter of item or template_name of template)."""
@@ -60,6 +110,12 @@ class Node(models.Model):
             return self.paramstr_set.filter(name = 'template_name').get().value
         elif self.typ == 1:
             return self.paramstr_set.filter(primary = True).get().value
+
+    def get_connector(self, node):
+        """Return QuerySet containing connector objects connecting self with node"""
+        assert self.typ == 1 and node.typ == 1
+        connector = Node.objects.filter(connection__node = self).filter(connection__node = node)
+        return connector
 
     def primary_template(self):
         """Return primary template of node"""
