@@ -36,12 +36,16 @@ def main(request):
             context_instance=RequestContext(request))
 
 def node_create(request):
-    template_id = request.POST.get('template_id')
+    template_id = int(request.POST.get('template_id'))
+    link_node_id = int(request.POST.get('link_with'))
     newname = request.POST.get('newname')
     template = Node.objects.get(id = template_id)
+    link_node = Node.objects.get(id = link_node_id) if link_node_id >= 0 else None
     primary_param = template.get_primary_param()
     node = template.create_item()
     node.add_param(template, primary_param.name, newname, primary = True)
+    if link_node:
+        node.link_with(link_node)
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'nc',
@@ -178,11 +182,14 @@ def template_detail(request, node_id):
             context_instance=RequestContext(request)
             )
 def node_new(request, template_id):
+    link_node_id = int(request.GET.get('link_node_id'))
     template = Node.objects.get(id = template_id)
     return render_to_response('manager/node_new.html',
             {
                 'template': template,
-                'primary_param': template.get_primary_param()
+                'link_node_id': link_node_id,
+                'node_selector': Node.objects.filter(typ=1),
+                'primary_param': template.get_primary_param(),
                 },
             context_instance=RequestContext(request)
             )

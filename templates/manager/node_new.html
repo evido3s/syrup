@@ -9,6 +9,19 @@
         <input type="text" name="newname" id="newname" value="{{ primary_param.value }}" />
     </p>
     <p>
+        <label for="link_with">Link with</label>
+        <select name="link_with" id="link_with">
+            <option value="-1"
+                {% if not link_node_id %}selected="selected"{% endif %}
+                >none</option>
+            {% for n in node_selector %}
+            <option value="{{n.id}}"
+                {% if link_node_id == n.id %}selected="selected"{% endif %}
+                >{{n}}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <p>
         <input type="submit" name="sub" id="submit" value="Create" />
     </p>
 </form>
