@@ -69,6 +69,19 @@
         <input type="submit" name="sub" value="Link" />
     </p>
 </form>
+<form action="{% url manager.views.node_new %}" method="get">
+    {% csrf_token %}
+    <p>
+        Create new linked node from template
+        <input type="hidden" name="link_node_id" value="{{node.id}}" />
+        <select name="template_id" id="template_id">
+        {% for template in template_full_list %}
+            <option value="{{template.id}}">{{ template }}</option>
+        {% endfor %}
+        </select>
+        <input type="submit" name="sub" value="Link" />
+    </p>
+</form>
 <ul>
     {% for connector,connected_node in connected_nodes.items %}
         <li>

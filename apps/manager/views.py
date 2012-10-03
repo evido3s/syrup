@@ -181,8 +181,13 @@ def template_detail(request, node_id):
                 },
             context_instance=RequestContext(request)
             )
-def node_new(request, template_id):
-    link_node_id = int(request.GET.get('link_node_id'))
+def node_new(request, template_id = None):
+    if not template_id:
+        template_id = int(request.GET.get('template_id'))
+    try:
+        link_node_id = int(request.GET.get('link_node_id'))
+    except:
+        link_node_id = None
     template = Node.objects.get(id = template_id)
     return render_to_response('manager/node_new.html',
             {
@@ -207,6 +212,7 @@ def node_detail(request, node_id):
                 'node': node,
                 'node_list': Node.objects.filter(typ=1).exclude(id=node_id),
                 'template_list': Node.objects.filter(typ=0).exclude(id=node.primary_template().id),
+                'template_full_list': Node.objects.filter(typ=0),
                 'params': node.list_params(),
                 'available_params': node.list_available_params(),
                 'templates': node.list_templates(incl_primary = False),
