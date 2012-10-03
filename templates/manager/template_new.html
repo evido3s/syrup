@@ -2,8 +2,16 @@
 <h1>New template</h1>
 <form action="{% url manager.views.template_create %}" method="post">
     {% csrf_token %}
-    <label for="newname">Name:</label>
-    <input type="text" name="newname" id="newname" value="" />
-    <input type="submit" name="sub" id="submit" value="Create" />
+    <p>
+        <label for="newname">Name:</label>
+        <input type="text" name="newname" id="newname" value="" />
+    </p>
+    <p>
+        <label for="primary_name">Primary parameter name</label>
+        <input type="text" name="primary_name" id="primary_name" value="" />
+        <label for="primary_value">value</label>
+        <input type="text" name="primary_value" id="primary_value" value="" />
+    </p>
+    <p><input type="submit" name="sub" id="submit" value="Create" /></p>
 </form>
 </body>

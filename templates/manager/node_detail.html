@@ -2,7 +2,9 @@
 <h1>{{ node }} detail</h1>
 <p><a href="{% url manager.views.node_list %}">items list</a></p>
 <h2>templates</h2>
-<p>primary template: {{ node.primary_template }}</p>
+<p>primary template:
+    <a href="{% url manager.views.template_detail node.primary_template.id %}"
+        >{{ node.primary_template }}</a></p>
 <form action="{% url manager.views.node_link_template %}" method="post">
     {% csrf_token %}
     <p>
@@ -19,7 +21,8 @@
 <ul>
     {% for template in templates %}
         <li>
-            {{ template }}
+            <a href="{% url manager.views.template_detail template.id %}"
+            >{{ template }}</a>
             <a href="{% url manager.views.node_unlink_template node.id template.id %}" title="unlink template">[X]</a>
         </li>
     {% empty %}

@@ -56,7 +56,10 @@ def node_create(request):
             }))
 
 def template_create(request):
+    primary_name = request.POST.get('primary_name')
+    primary_value = request.POST.get('primary_value')
     template = Node.create_template(request.POST.get('newname'))
+    template.add_param(template, primary_name, primary_value, primary = True)
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'tc',
@@ -177,6 +180,7 @@ def template_detail(request, node_id):
     return render_to_response('manager/template_detail.html',
             {
                 'node': node,
+                'instance_links': node.instance.all(),
                 'params': node.paramstr_set.all(),
                 },
             context_instance=RequestContext(request)

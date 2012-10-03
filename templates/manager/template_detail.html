@@ -24,4 +24,10 @@
     <label for="param_primary">primary</label>
     <input type="submit" name="sub" id="submit" value="Add" />
 </form>
+<h2>instances</h2>
+<ul>
+{% for il in instance_links %}
+    <li><a href="{% url manager.views.node_detail il.node.id %}">{{il.node}}</a></li>
+{% endfor %}
+</ul>
 </body>
