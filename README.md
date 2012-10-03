@@ -13,13 +13,10 @@ Install
 -------
 
 ```shell
-# as root
-apt-get install python-pip
-pip install -r requirements.txt
-
-# as normal user
+sudo apt-get install python-pip
 git clone https://github.com/beli-sk/syrup.git
 cd syrup
+sudo pip install -r requirements.txt
 mkdir sqlite
 ./manage.py syncdb --noinput
 ./manage.py runserver
