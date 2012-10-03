@@ -21,11 +21,11 @@ pip install -r requirements.txt
 git clone https://github.com/beli-sk/syrup.git
 cd syrup
 mkdir sqlite
-./manage.py syncdb
+./manage.py syncdb --noinput
 ./manage.py runserver
 ```
 
-or using virtualenv - all python requirements will be installed only inside virtual environment for this project
+Or using virtualenv - all python requirements will be installed only inside virtual environment for this project:
 
 ```shell
 # as root
@@ -39,9 +39,11 @@ git clone https://github.com/beli-sk/syrup.git
 cd syrup
 pip install -r requirements.txt
 mkdir sqlite
-./manage.py syncdb
+./manage.py syncdb --noinput
 ./manage.py runserver
 
 # to exit the virtual python environment
 deactivate
 ```
+
+This will initialize an empty database with single user `admin`, password `syrup`.
