@@ -8,7 +8,7 @@ class Node(models.Model):
 
     def __unicode__(self):
         if self.typ == 0:
-            return u"Template %s" % ( self.get_name() )
+            return u"template %s" % ( self.get_name() )
         elif self.typ == 1:
             return u"%s %s" % ( self.primary_template().get_name(), self.get_name() )
         elif self.typ == 2:

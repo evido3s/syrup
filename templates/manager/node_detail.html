@@ -1,6 +1,17 @@
 <html><head></head><body>
 <h1>{{ node }} detail</h1>
 <p><a href="{% url manager.views.node_list %}">items list</a></p>
+<p>History:
+{% for n in node_history.get_nodes %}
+    {% if n.typ == 0 %}
+    <a href="{% url manager.views.template_detail n.id %}"
+    {% else %}
+    <a href="{% url manager.views.node_detail n.id %}"
+    {% endif %}
+    >{{n}}</a>
+    {% if not forloop.last %} &gt; {% endif %}
+{% endfor %}
+</p>
 <h2>templates</h2>
 <p>primary template:
     <a href="{% url manager.views.template_detail node.primary_template.id %}"
@@ -95,4 +106,9 @@
         <li><i>No connections.</i></li>
     {% endfor %}
 </ul>
+{% if debug %}
+<pre>
+{{debug}}
+</pre>
+{% endif %}
 </body>

@@ -4,8 +4,40 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
+from collections import deque
 
 from backend.models import *
+
+class NodeHistory():
+    maxlen = 5
+    def get_history(self):
+        return self.hist
+    def get_nodes(self):
+        nodes = list()
+        for node_id in self.hist:
+            nodes.append(Node.objects.get(id = node_id))
+        return nodes
+    def add_node(self, node_id):
+        if node_id in self.hist:
+            self.hist.remove(node_id)
+        self.hist.append(node_id)
+    def clear(self):
+        self.hist = deque(maxlen = self.maxlen)
+
+def node_history(f):
+    """decorator adding node_history to session"""
+    def wrapped(*args, **kwargs):
+        request = args[0]
+        if 'node_history' not in request.session or not isinstance(request.session['node_history'], NodeHistory):
+            node_history = NodeHistory()
+            node_history.clear()
+            request.session['node_history'] = node_history
+        request.session.modified = True
+        return f(*args, **kwargs)
+    wrapped.__name__ = f.__name__
+    wrapped.__doc__ = f.__doc__
+    wrapped.__dict__.update(f.__dict__)
+    return wrapped
 
 msgs = {
     'tc': 'Template created.',
@@ -175,13 +207,17 @@ def template_list(request):
                 },
             context_instance=RequestContext(request)
             )
+@node_history
 def template_detail(request, node_id):
+    node_history = request.session['node_history']
+    node_history.add_node(node_id)
     node = Node.objects.get(id=node_id)
     return render_to_response('manager/template_detail.html',
             {
                 'node': node,
                 'instance_links': node.instance.all(),
                 'params': node.paramstr_set.all(),
+                'node_history': node_history,
                 },
             context_instance=RequestContext(request)
             )
@@ -209,7 +245,10 @@ def node_list(request):
                 },
             context_instance=RequestContext(request)
             )
+@node_history
 def node_detail(request, node_id):
+    node_history = request.session['node_history']
+    node_history.add_node(node_id)
     node = Node.objects.get(id=node_id)
     return render_to_response('manager/node_detail.html',
             {
@@ -221,6 +260,8 @@ def node_detail(request, node_id):
                 'available_params': node.list_available_params(),
                 'templates': node.list_templates(incl_primary = False),
                 'connected_nodes': node.list_linked(),
+                'node_history': node_history,
+                #'debug': repr(node_history.get_history()),
                 },
             context_instance=RequestContext(request)
             )

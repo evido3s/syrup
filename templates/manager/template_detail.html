@@ -1,6 +1,17 @@
 <html><head></head><body>
 <h1>{{ node }} detail</h1>
 <p><a href="{% url manager.views.template_list %}">templates list</a></p>
+<p>History:
+{% for n in node_history.get_nodes %}
+    {% if n.typ == 0 %}
+    <a href="{% url manager.views.template_detail n.id %}"
+    {% else %}
+    <a href="{% url manager.views.node_detail n.id %}"
+    {% endif %}
+    >{{n}}</a>
+    {% if not forloop.last %} &gt; {% endif %}
+{% endfor %}
+</p>
 <p><a href="{% url manager.views.node_new template_id=node.id %}">create item from this template</a></p>
 <h2>parameters</h2>
 <form action="{% url manager.views.template_add_param %}" method="post">
