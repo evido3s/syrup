@@ -1,5 +1,7 @@
-<html><head></head><body>
-<h1>Nodes list</h1>
+{% extends "base.html" %}
+
+{% block header %}Nodes list{% endblock %}
+{% block content %}
 <p><a href="{% url manager.views.main %}">main page</a></p>
 <ul>
     {% for node in nodes %}
@@ -10,4 +12,4 @@
         <li><i>No nodes found.</i></li>
     {% endfor %}
 </ul>
-</body>
+{% endblock %}

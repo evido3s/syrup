@@ -1,17 +1,19 @@
-<html><head></head><body>
-<h1>New template</h1>
+{% extends "base.html" %}
+
+{% block header %}Create new template{% endblock %}
+{% block content %}
 <form action="{% url manager.views.template_create %}" method="post">
     {% csrf_token %}
     <p>
-        <label for="newname">Name:</label>
+        <label for="newname">Template name:</label>
         <input type="text" name="newname" id="newname" value="" />
     </p>
     <p>
-        <label for="primary_name">Primary parameter name</label>
+        <label for="primary_name">Primary parameter name:</label>
         <input type="text" name="primary_name" id="primary_name" value="" />
-        <label for="primary_value">value</label>
+        <label for="primary_value">Primary parameter's default value:</label>
         <input type="text" name="primary_value" id="primary_value" value="" />
     </p>
-    <p><input type="submit" name="sub" id="submit" value="Create" /></p>
+    <p><input class="btn btn-primary btn-large" type="submit" name="sub" id="submit" value="Create" /></p>
 </form>
-</body>
+{% endblock %}

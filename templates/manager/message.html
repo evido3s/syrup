@@ -1,5 +1,7 @@
-<html><head></head><body>
-<h1>Message</h1>
+{% extends "base.html" %}
+
+{% block header %}Message{% endblock %}
+{% block content %}
 <p>{{ msg }}</p>
 <p>
 {% if goto %}
@@ -9,3 +11,4 @@
 {% endif %}
 </p>
 </body>
+{% endblock %}

@@ -1,5 +1,7 @@
-<html><head></head><body>
-<h1>Templates list</h1>
+{% extends "base.html" %}
+
+{% block header %}Templates list{% endblock %}
+{% block content %}
 <p><a href="{% url manager.views.main %}">main page</a></p>
 <p><a href="{% url manager.views.template_new %}">create new</a></p>
 <ul>
@@ -11,4 +13,4 @@
         <li><i>No templates found.</i></li>
     {% endfor %}
 </ul>
-</body>
+{% endblock %}

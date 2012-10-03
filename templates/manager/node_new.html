@@ -1,5 +1,7 @@
-<html><head></head><body>
-<h1>New node</h1>
+{% extends "base.html" %}
+
+{% block header %}New node{% endblock %}
+{% block content %}
 <form action="{% url manager.views.node_create %}" method="post">
     {% csrf_token %}
     <input type="hidden" name="template_id" value="{{ template.id }}" />
@@ -25,4 +27,4 @@
         <input type="submit" name="sub" id="submit" value="Create" />
     </p>
 </form>
-</body>
+{% endblock %}

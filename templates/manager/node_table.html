@@ -1,5 +1,7 @@
-<html><head></head><body>
-<h1>Nodes table</h1>
+{% extends "base.html" %}
+
+{% block header %}Nodes table{% endblock %}
+{% block content %}
 <p><a href="{% url manager.views.main %}">main page</a></p>
 <form method="get" action="{% url manager.views.node_table %}">
 <label for="template">Template</label>
@@ -46,4 +48,4 @@
 {{ debug }}
 </pre>
 {% endif %}
-</body>
+{% endblock %}

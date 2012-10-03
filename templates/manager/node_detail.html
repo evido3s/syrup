@@ -1,5 +1,7 @@
-<html><head></head><body>
-<h1>{{ node }} detail</h1>
+{% extends "base.html" %}
+
+{% block header %}{{ node }} detail{% endblock %}
+{% block content %}
 <p><a href="{% url manager.views.node_list %}">items list</a></p>
 <p>History:
 {% for n in node_history.get_nodes %}
@@ -111,4 +113,4 @@
 {{debug}}
 </pre>
 {% endif %}
-</body>
+{% endblock %}
