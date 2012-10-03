@@ -207,3 +207,46 @@ def node_detail(request, node_id):
                 },
             context_instance=RequestContext(request)
             )
+def node_table(request):
+    template_id = request.GET.get('template_id')
+    subtemplate_id = request.GET.get('subtemplate_id')
+    template = Node.objects.get(id = template_id) if template_id else None
+    subtemplate = Node.objects.get(id = subtemplate_id) if subtemplate_id and int(subtemplate_id) >= 0 else None
+    if template:
+        node_list = Node.objects.filter(template__template = template)
+        available_params = list(template.list_params(incl_structural = False, incl_primary = False))
+        if subtemplate:
+            available_params.extend(list(subtemplate.list_params(incl_structural = False, incl_primary = True)))
+        try:
+            primary_name = template.get_primary_param().name
+        except:
+            primary_name = u'name'
+    else:
+        node_list = list()
+        available_params = list()
+        primary_name = None
+    nodetable = list()
+    for node in node_list:
+        fields = list()
+        for param in available_params:
+            try:
+                fields.append(node.get_param(param.template, param.name).value)
+            except:
+                fields.append(None)
+        noderow = {
+            'node': node,
+            'fields': fields,
+        }
+        nodetable.append(noderow)
+    return render_to_response('manager/node_table.html',
+            {
+                'template': template,
+                'subtemplate': subtemplate,
+                'node_list': node_list,
+                'nodetable': nodetable,
+                'template_list': Node.objects.filter(typ=0),
+                'available_params': available_params,
+                'primary_name': primary_name,
+                },
+            context_instance=RequestContext(request)
+            )

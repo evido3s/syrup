@@ -55,12 +55,14 @@ class Node(models.Model):
         elif self.typ == 1:
             return self.paramstr_set.filter(template = self.primary_template, primary = True).get()
 
-    def list_params(self, incl_structural = True):
+    def list_params(self, incl_structural = True, incl_primary = True):
         """Returns QuerySet of all parameters of this node"""
-        if incl_structural:
-            return self.paramstr_set.all()
-        else:
-            return self.paramstr_set.exclude(structural = True)
+        paramset = self.paramstr_set
+        if not incl_structural:
+            paramset = paramset.exclude(structural = True)
+        if not incl_primary:
+            paramset = paramset.exclude(primary = True)
+        return paramset.all()
 
     def list_available_params(self):
         """Returns list of available parameters from all linked templates"""

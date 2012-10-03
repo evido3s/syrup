@@ -1,0 +1,49 @@
+<html><head></head><body>
+<h1>Nodes table</h1>
+<p><a href="{% url manager.views.main %}">main page</a></p>
+<form method="get" action="{% url manager.views.node_table %}">
+<label for="template">Template</label>
+<select name="template_id" id="template">
+    {% for t in template_list %}
+    <option value="{{t.id}}"
+        {% if t.id == template.id %}selected="selected"{% endif %}
+        >{{t}}</option>
+    {% endfor %}
+</select>
+<label for="subtemplate">subtemplate</label>
+<select name="subtemplate_id" id="subtemplate">
+    <option value="-1">none</option>
+    {% for t in template_list %}
+    <option value="{{t.id}}"
+        {% if t.id == subtemplate.id %}selected="selected"{% endif %}
+        >{{t}}</option>
+    {% endfor %}
+</select>
+<input type="submit" name="sub" value="Show" />
+</form>
+{% if template %}
+<table>
+    <tr>
+        <th>{{primary_name}}</th>
+        {% for param in available_params %}
+        <th>{{ param.name }}</th>
+        {% endfor %}
+    </tr>
+    {% for noderow in nodetable %}
+        <tr>
+            <td><a href="{% url manager.views.node_detail noderow.node.id %}">{{ noderow.node.get_name }}</a></td>
+            {% for field in noderow.fields %}
+            <td>{{ field }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No items.</p>
+{% endif %}
+{% if debug %}
+<pre>
+{{ debug }}
+</pre>
+{% endif %}
+</body>
