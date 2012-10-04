@@ -25,10 +25,7 @@ mkdir sqlite
 Or using virtualenv - all python requirements will be installed only inside virtual environment for this project:
 
 ```shell
-# as root
-apt-get install python-pip python-virtualenv
-
-# as normal user
+sudo apt-get install python-pip python-virtualenv
 virtualenv syrup_env
 cd syrup_env
 source bin/activate
