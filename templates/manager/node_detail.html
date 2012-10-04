@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block header %}{{ node }} detail{% endblock %}
+{% block header %}{{ node }}{% endblock %}
 {% block content %}
-<p><a href="{% url manager.views.node_list %}">items list</a></p>
+<p><a href="{% url manager.views.node_list %}">nodes list</a></p>
 <p>History:
 {% for n in node_history.get_nodes %}
     {% if n.typ == 0 %}
@@ -21,25 +21,24 @@
 <form action="{% url manager.views.node_link_template %}" method="post">
     {% csrf_token %}
     <p>
-        Link template
+        Link additional templates: 
         <input type="hidden" name="node_id" value="{{node.id}}" />
-        <select name="template_id" id="template_id">
+        <select multiple="multiple" name="template_id" id="template_id">
         {% for template in template_list %}
             <option value="{{template.id}}">{{ template }}</option>
         {% endfor %}
         </select>
-        <input type="submit" name="sub" value="Link" />
+        <input class="btn" type="submit" name="sub" value="Link" />
     </p>
 </form>
 <ul>
     {% for template in templates %}
         <li>
-            <a href="{% url manager.views.template_detail template.id %}"
-            >{{ template }}</a>
+            <a href="{% url manager.views.template_detail template.id %}">{{ template }}</a>
             <a href="{% url manager.views.node_unlink_template node.id template.id %}" title="unlink template">[X]</a>
         </li>
     {% empty %}
-        <li><i>No templates.</i></li>
+        <li><i>No more templates.</i></li>
     {% endfor %}
 </ul>
 <h2>parameters</h2>
@@ -58,7 +57,6 @@
 <form action="{% url manager.views.node_add_param %}" method="post">
     {% csrf_token %}
     <p>
-        Add parameter
         <input type="hidden" name="node_id" value="{{node.id}}" />
         <label for="param_id">name</label>
         <select name="param_id" id="param_id">
@@ -68,7 +66,7 @@
         </select>
         <label for="param_value">value</label>
         <input type="text" name="param_value" id="param_value" value="{{ param.value }}" />
-        <input type="submit" name="sub" value="Add" />
+        <input class="btn btn-primary" type="submit" name="sub" value="Add" />
     </p>
 </form>
 <h2>connected objects</h2>

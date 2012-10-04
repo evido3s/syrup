@@ -2,7 +2,6 @@
 
 {% block header %}Nodes list{% endblock %}
 {% block content %}
-<p><a href="{% url manager.views.main %}">main page</a></p>
 <ul>
     {% for node in nodes %}
         <li>

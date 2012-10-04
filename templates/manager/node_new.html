@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block header %}New node{% endblock %}
+{% block header %}Create new node{% endblock %}
 {% block content %}
 <form action="{% url manager.views.node_create %}" method="post">
     {% csrf_token %}
     <input type="hidden" name="template_id" value="{{ template.id }}" />
-    <p>{{ template }}</p>
+    <p class="text-warning">Using primary template: {{ template }}</p>
     <p>
         <label for="newname">Primary parameter value ({{ primary_param.name }})</label>
         <input type="text" name="newname" id="newname" value="{{ primary_param.value }}" />
     </p>
     <p>
-        <label for="link_with">Link with</label>
+        <label for="link_with">Link with this node</label>
         <select name="link_with" id="link_with">
             <option value="-1"
                 {% if not link_node_id %}selected="selected"{% endif %}
