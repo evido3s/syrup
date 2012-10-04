@@ -3,12 +3,6 @@
 {% block header %}{{ node }}{% endblock %}
 {% block content %}
 <p><a href="{% url manager.views.template_list %}">templates list</a></p>
-<p>History:
-{% for n in node_history.get_nodes %}
-    <a href="{% url manager.views.node_detail n.id %}">{{n}}</a>
-    {% if not forloop.last %} &gt; {% endif %}
-{% endfor %}
-</p>
 {% if node.is_primary_template %}
 <p><a href="{% url manager.views.node_new template_id=node.id %}" class="btn btn-success">create node using this template</a></p>
 {% endif %}

@@ -257,18 +257,17 @@ def node_list(request):
                 },
             context_instance=RequestContext(request)
             )
-def template_detail(request, node, node_history):
+def template_detail(request, node):
     return render_to_response('manager/template_detail.html',
             {
                 'node': node,
                 'primary_instances': node.primary_instances.all(),
                 'instances': node.instances.all(),
                 'params': node.paramstr_set.all(),
-                'node_history': node_history,
                 },
             context_instance=RequestContext(request)
             )
-def item_detail(request, node, node_history):
+def item_detail(request, node):
     connected = list()
     connected.extend( [(u'up', x, y) for x,y in node.list_linked(1).items()] )
     connected.extend( [(u'down', x, y) for x,y in node.list_linked(-1).items()] )
@@ -283,23 +282,21 @@ def item_detail(request, node, node_history):
                 'available_params': node.list_available_params(),
                 'templates': node.list_templates(incl_primary = False),
                 'connected': connected,
-                'node_history': node_history,
-                #'debug': repr(connected),
                 },
             context_instance=RequestContext(request)
             )
 @node_history
 def node_detail(request, node_id):
-    node_history = request.session['node_history']
-    node_history.add_node(node_id)
+    request.session['node_history'].add_node(node_id)
     node = Node.objects.get(id=node_id)
     if node.typ == 0:
-        return template_detail(request, node, node_history)
+        return template_detail(request, node)
     elif node.typ == 1:
-        return item_detail(request, node, node_history)
+        return item_detail(request, node)
     #elif node.typ == 2:
-    #    connector_detail(request, node, node_history)
+    #    connector_detail(request, node)
     else: raise
+
 def node_table(request):
     template_id = request.GET.get('template_id')
     subtemplate_id = request.GET.get('subtemplate_id')

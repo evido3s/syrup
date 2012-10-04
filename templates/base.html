@@ -11,7 +11,7 @@
     <div class="container">
       <a href="{% url manager.views.main %}"><i class="icon-home"></i></a> &gt;
       <small>
-        {% for n in node_history.get_nodes %}
+        {% for n in request.session.node_history.get_nodes %}
         <a href="{% url manager.views.node_detail n.id %}">{{n}}</a>
         {% if not forloop.last %} &gt; {% endif %}
         {% endfor %}
