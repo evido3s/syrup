@@ -6,7 +6,7 @@
 <ul>
     {% for node in nodes %}
         <li>
-            <a href="{% url manager.views.template_detail node.id %}">{{ node }}</a>
+            <a href="{% url manager.views.node_detail node.id %}">{{ node }}</a>
         </li>
     {% empty %}
         <li><i>No templates found.</i></li>
