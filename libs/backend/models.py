@@ -48,6 +48,12 @@ class Node(models.Model):
         except Node.DoesNotExist:
             node.linksdown.get(id = connector.id)
             node.linksdown.remove(connector)
+        # check if it was last link of the connector
+        if (connector.nodes.count()
+                + connector.nodesup.count()
+                + connector.nodesdown.count()) == 0:
+            # if so, delete the connector itself
+            connector.delete()
 
     def create_item(self, primary_value):
         """should be called on a template, creates instance of the template, returning the new node"""
@@ -111,7 +117,7 @@ class Node(models.Model):
             elif direction < 0:
                 nodeset = connector.nodesdown
             else:
-                nodeset = connector.nodes
+                nodeset = connector.nodes.exclude(id = self.id)
             linked[connector] = nodeset.all()
         return linked
 
@@ -119,7 +125,7 @@ class Node(models.Model):
         templates = list()
         if incl_primary:
             templates.append(self.primary_template)
-        templates.extend(list(self.templates))
+        templates.extend(list(self.templates.all()))
         return templates
 
     def link_with(self, node, direction):

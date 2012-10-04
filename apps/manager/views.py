@@ -21,6 +21,14 @@ class NodeHistory():
         if node_id in self.hist:
             self.hist.remove(node_id)
         self.hist.append(node_id)
+    def remove_node(self, node_id):
+        while True:
+            try:
+                self.hist.remove(node_id)
+            except:
+                break
+    def get_last(self, skip = 0):
+        return self.hist[-1 - skip]
     def clear(self):
         self.hist = deque(maxlen = self.maxlen)
 
@@ -42,6 +50,7 @@ def node_history(f):
 msgs = {
     'tc': 'Template created.',
     'nc': 'Node created.',
+    'nd': 'Node deleted.',
     'nl': 'Nodes linked.',
     'nul': 'Nodes unlinked.',
     'tl': 'Template linked.',
@@ -67,15 +76,32 @@ def main(request):
     return render_to_response('manager/main.html', {},
             context_instance=RequestContext(request))
 
+@node_history
+def node_delete(request, node_id):
+    node_history = request.session['node_history']
+    node = Node.objects.get(id = node_id)
+    node_history.remove_node(node_id)
+    node.delete()
+    try:
+        goto = reverse('manager.views.node_detail',
+                    kwargs = {
+                        'node_id': node_history.get_last()
+                    })
+    except:
+        goto = reverse('manager.views.main')
+    return HttpResponseRedirect( reverse('manager.views.message',
+            kwargs = {
+                'msg': 'nd',
+                'goto': goto,
+            }))
+
 def node_create(request):
     template_id = int(request.POST.get('template_id'))
     link_node_id = int(request.POST.get('link_with'))
     newname = request.POST.get('newname')
     template = Node.objects.get(id = template_id)
     link_node = Node.objects.get(id = link_node_id) if link_node_id >= 0 else None
-    primary_param = template.get_primary_param()
-    node = template.create_item()
-    node.add_param(template, primary_param.name, newname, primary = True)
+    node = template.create_item(newname)
     if link_node:
         node.link_with(link_node)
     return HttpResponseRedirect( reverse('manager.views.message',
@@ -114,8 +140,9 @@ def node_link_template(request):
                     })
             }))
 def node_unlink(request, node_id, connector_id):
+    node = Node.objects.get(id = node_id)
     connector = Node.objects.get(id = connector_id)
-    Node.unlink(connector)
+    node.unlink(connector)
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'nul',
@@ -139,7 +166,8 @@ def node_unlink_template(request, node_id, template_id):
 def node_link(request):
     node = Node.objects.get(id = request.POST.get('node_id'))
     link_node = Node.objects.get(id = request.POST.get('link_node_id'))
-    node.link_with(link_node)
+    direction = int(request.POST.get('link_direction'))
+    node.link_with(link_node, direction)
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'nl',
@@ -215,7 +243,8 @@ def template_detail(request, node_id):
     return render_to_response('manager/template_detail.html',
             {
                 'node': node,
-                'instance_links': node.instance.all(),
+                'primary_instances': node.primary_instances.all(),
+                'instances': node.instances.all(),
                 'params': node.paramstr_set.all(),
                 'node_history': node_history,
                 },
@@ -250,18 +279,22 @@ def node_detail(request, node_id):
     node_history = request.session['node_history']
     node_history.add_node(node_id)
     node = Node.objects.get(id=node_id)
+    connected = list()
+    connected.extend( [(u'up', x, y) for x,y in node.list_linked(1).items()] )
+    connected.extend( [(u'down', x, y) for x,y in node.list_linked(-1).items()] )
+    connected.extend( [(u'equal', x, y) for x,y in node.list_linked(0).items()] )
     return render_to_response('manager/node_detail.html',
             {
                 'node': node,
                 'node_list': Node.objects.filter(typ=1).exclude(id=node_id),
-                'template_list': Node.objects.filter(typ=0).exclude(id=node.primary_template().id),
+                'template_list': Node.objects.filter(typ=0).exclude(id=node.get_primary_template().id),
                 'template_full_list': Node.objects.filter(typ=0),
                 'params': node.list_params(),
                 'available_params': node.list_available_params(),
                 'templates': node.list_templates(incl_primary = False),
-                'connected_nodes': node.list_linked(),
+                'connected': connected,
                 'node_history': node_history,
-                #'debug': repr(node_history.get_history()),
+                #'debug': repr(connected),
                 },
             context_instance=RequestContext(request)
             )

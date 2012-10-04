@@ -75,6 +75,11 @@
     <p>
         Link with
         <input type="hidden" name="node_id" value="{{node.id}}" />
+        <select name="link_direction" id="link_direction">
+            <option value="-1">depends on (down)</option>
+            <option value="0">neutral</option>
+            <option value="1">provides (up)</option>
+        </select>
         <select name="link_node_id" id="link_node_id">
         {% for link_node in node_list %}
             <option value="{{link_node.id}}">{{ link_node }}</option>
@@ -97,10 +102,21 @@
     </p>
 </form>
 <ul>
-    {% for connector,connected_node in connected_nodes.items %}
-        <li>
-            <a href="{% url manager.views.node_detail node_id=connected_node.id %}">{{ connected_node }}</a>
-            <a href="{% url manager.views.node_unlink node.id connector.id %}" title="unlink with node">[X]</a>
+    {% for direction,connector,connected_nodes in connected %}
+        <li>{{direction}}: {{connector}}
+            <a href="{% url manager.views.node_unlink node.id connector.id %}" title="unlink from the connector">[unlink]</a>
+            <a href="{% url manager.views.node_delete connector.id %}" title="delete the connector">[drop]</a>
+            <ul>
+                {% for n in connected_nodes %}
+                <li>
+                    <a href="{% url manager.views.node_detail n.id %}">{{n}}</a>
+                    <a href="{% url manager.views.node_unlink n.id connector.id %}"
+                        title="unlink {{n}} from connector">[unlink]</a>
+                </li>
+                {% empty %}
+                <li><i>No connections.</i></li>
+                {% endfor %}
+            </ul>
         </li>
     {% empty %}
         <li><i>No connections.</i></li>

@@ -39,8 +39,11 @@
 </form>
 <h2>instances</h2>
 <ul>
-{% for il in instance_links %}
-    <li><a href="{% url manager.views.node_detail il.node.id %}">{{il.node}}</a></li>
+{% for i in primary_instances %}
+    <li><a href="{% url manager.views.node_detail i.id %}">{{i}}</a> *</li>
+{% endfor %}
+{% for i in instances %}
+    <li><a href="{% url manager.views.node_detail i.id %}">{{i}}</a></li>
 {% endfor %}
 </ul>
 {% endblock %}
