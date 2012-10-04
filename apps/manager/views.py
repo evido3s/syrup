@@ -123,7 +123,7 @@ def template_create(request):
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'tc',
-                'goto': reverse('manager.views.template_detail',
+                'goto': reverse('manager.views.node_detail',
                     kwargs = {
                         'node_id': template.id
                     })
@@ -183,14 +183,10 @@ def node_del_param(request, param_id):
     param = ParamStr.objects.get(id = param_id)
     node = param.node
     param.delete_param()
-    if node.typ == 0:
-        goto_view = 'manager.views.template_detail'
-    else:
-        goto_view = 'manager.views.node_detail'
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'pd',
-                'goto': reverse(goto_view,
+                'goto': reverse('manager.views.node_detail',
                     kwargs = {
                         'node_id': node.id
                     })
@@ -220,7 +216,7 @@ def template_add_param(request):
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'pa',
-                'goto': reverse('manager.views.template_detail',
+                'goto': reverse('manager.views.node_detail',
                     kwargs = {
                         'node_id': template.id
                     })
@@ -234,21 +230,6 @@ def template_list(request):
     return render_to_response('manager/template_list.html',
             {
                 'nodes': Node.objects.filter(typ=0),
-                },
-            context_instance=RequestContext(request)
-            )
-@node_history
-def template_detail(request, node_id):
-    node_history = request.session['node_history']
-    node_history.add_node(node_id)
-    node = Node.objects.get(id=node_id)
-    return render_to_response('manager/template_detail.html',
-            {
-                'node': node,
-                'primary_instances': node.primary_instances.all(),
-                'instances': node.instances.all(),
-                'params': node.paramstr_set.all(),
-                'node_history': node_history,
                 },
             context_instance=RequestContext(request)
             )
@@ -276,19 +257,26 @@ def node_list(request):
                 },
             context_instance=RequestContext(request)
             )
-@node_history
-def node_detail(request, node_id):
-    node_history = request.session['node_history']
-    node_history.add_node(node_id)
-    node = Node.objects.get(id=node_id)
+def template_detail(request, node, node_history):
+    return render_to_response('manager/template_detail.html',
+            {
+                'node': node,
+                'primary_instances': node.primary_instances.all(),
+                'instances': node.instances.all(),
+                'params': node.paramstr_set.all(),
+                'node_history': node_history,
+                },
+            context_instance=RequestContext(request)
+            )
+def item_detail(request, node, node_history):
     connected = list()
     connected.extend( [(u'up', x, y) for x,y in node.list_linked(1).items()] )
     connected.extend( [(u'down', x, y) for x,y in node.list_linked(-1).items()] )
     connected.extend( [(u'equal', x, y) for x,y in node.list_linked(0).items()] )
-    return render_to_response('manager/node_detail.html',
+    return render_to_response('manager/item_detail.html',
             {
                 'node': node,
-                'node_list': Node.objects.filter(typ=1).exclude(id=node_id),
+                'node_list': Node.objects.filter(typ=1).exclude(id=node.id),
                 'template_list': Node.objects.filter(typ=0).exclude(id=node.get_primary_template().id),
                 'primary_template_list': Node.list_primary_templates(),
                 'params': node.list_params(),
@@ -300,6 +288,18 @@ def node_detail(request, node_id):
                 },
             context_instance=RequestContext(request)
             )
+@node_history
+def node_detail(request, node_id):
+    node_history = request.session['node_history']
+    node_history.add_node(node_id)
+    node = Node.objects.get(id=node_id)
+    if node.typ == 0:
+        return template_detail(request, node, node_history)
+    elif node.typ == 1:
+        return item_detail(request, node, node_history)
+    #elif node.typ == 2:
+    #    connector_detail(request, node, node_history)
+    else: raise
 def node_table(request):
     template_id = request.GET.get('template_id')
     subtemplate_id = request.GET.get('subtemplate_id')

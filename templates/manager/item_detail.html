@@ -5,18 +5,13 @@
 <p><a href="{% url manager.views.node_list %}">nodes list</a></p>
 <p>History:
 {% for n in node_history.get_nodes %}
-    {% if n.typ == 0 %}
-    <a href="{% url manager.views.template_detail n.id %}"
-    {% else %}
-    <a href="{% url manager.views.node_detail n.id %}"
-    {% endif %}
-    >{{n}}</a>
+    <a href="{% url manager.views.node_detail n.id %}">{{n}}</a>
     {% if not forloop.last %} &gt; {% endif %}
 {% endfor %}
 </p>
 <h2>templates</h2>
 <p>primary template:
-    <a href="{% url manager.views.template_detail node.primary_template.id %}"
+    <a href="{% url manager.views.node_detail node.primary_template.id %}"
         >{{ node.primary_template.get_name }}</a></p>
 <form action="{% url manager.views.node_link_template %}" method="post">
     {% csrf_token %}
@@ -34,7 +29,7 @@
 <ul>
     {% for template in templates %}
         <li>
-            <a href="{% url manager.views.template_detail template.id %}">{{ template.get_name }}</a>
+            <a href="{% url manager.views.node_detail template.id %}">{{ template.get_name }}</a>
             <a href="{% url manager.views.node_unlink_template node.id template.id %}" title="unlink template">[X]</a>
         </li>
     {% empty %}

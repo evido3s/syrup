@@ -5,12 +5,7 @@
 <p><a href="{% url manager.views.template_list %}">templates list</a></p>
 <p>History:
 {% for n in node_history.get_nodes %}
-    {% if n.typ == 0 %}
-    <a href="{% url manager.views.template_detail n.id %}"
-    {% else %}
-    <a href="{% url manager.views.node_detail n.id %}"
-    {% endif %}
-    >{{n}}</a>
+    <a href="{% url manager.views.node_detail n.id %}">{{n}}</a>
     {% if not forloop.last %} &gt; {% endif %}
 {% endfor %}
 </p>
