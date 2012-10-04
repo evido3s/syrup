@@ -3,17 +3,16 @@
 {% block header %}Create new template{% endblock %}
 {% block content %}
 <form action="{% url manager.views.template_create %}" method="post">
-    {% csrf_token %}
-    <p>
-        <label for="newname">Template name:</label>
-        <input type="text" name="newname" id="newname" value="" />
-    </p>
-    <p>
-        <label for="primary_name">Primary parameter name:</label>
-        <input type="text" name="primary_name" id="primary_name" value="" />
-        <label for="primary_value">Primary parameter's default value:</label>
-        <input type="text" name="primary_value" id="primary_value" value="" />
-    </p>
-    <p><input class="btn btn-primary btn-large" type="submit" name="sub" id="submit" value="Create" /></p>
+  {% csrf_token %}
+  <div>
+    <input placeholder="Template name" type="text" name="newname" id="newname" value="" />
+  </div>
+  <div>
+    <input placeholder="primary parameter name" type="text" name="primary_name" id="primary_name" value="" />
+    <input placeholder="primary default value" type="text" name="primary_value" id="primary_value" value="" />
+  </div>
+  <div>
+    <input class="btn btn-primary" type="submit" name="sub" id="submit" value="Create" />
+  </div>
 </form>
 {% endblock %}

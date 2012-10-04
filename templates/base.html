@@ -9,7 +9,15 @@
     <h1>{% block header %}{% endblock %}</h1>
     </div>
     <div class="container">
-      <p><a href="{% url manager.views.main %}"><i class="icon-home"></i></a></p>
+      <a href="{% url manager.views.main %}"><i class="icon-home"></i></a> &gt;
+      <small>
+        {% for n in node_history.get_nodes %}
+        <a href="{% url manager.views.node_detail n.id %}">{{n}}</a>
+        {% if not forloop.last %} &gt; {% endif %}
+        {% endfor %}
+      </small>
+    </div>
+    <div class="container">
       {% block content %}{% endblock %}
     </div>
     <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>

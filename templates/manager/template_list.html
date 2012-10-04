@@ -3,13 +3,13 @@
 {% block header %}Templates list{% endblock %}
 {% block content %}
 <p><a href="{% url manager.views.template_new %}">create new template</a></p>
-<ul>
+<table class="table table-condensed table-hover">
     {% for node in nodes %}
-        <li>
-            <a href="{% url manager.views.node_detail node.id %}">{{ node }}</a>
-        </li>
+        <tr>
+            <td><a href="{% url manager.views.node_detail node.id %}">{{ node }}</a></td>
+        </tr>
     {% empty %}
-        <li><i>No templates found.</i></li>
+        <tr class="warning"><td><i>No templates found.</i></td></tr>
     {% endfor %}
-</ul>
+</table>
 {% endblock %}

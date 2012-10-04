@@ -2,7 +2,7 @@
 
 {% block header %}Nodes table{% endblock %}
 {% block content %}
-<form method="get" action="{% url manager.views.node_table %}">
+<form class="form-inline" method="get" action="{% url manager.views.node_table %}">
 <label for="template">Template</label>
 <select name="template_id" id="template">
     {% for t in template_list %}
@@ -20,10 +20,10 @@
         >{{t}}</option>
     {% endfor %}
 </select>
-<input type="submit" name="sub" value="Show" />
+<input class="btn btn-primary" type="submit" name="sub" value="Show" />
 </form>
 {% if template %}
-<table>
+<table class="table table-condensed table-hover">
     <tr>
         <th>{{primary_name}}</th>
         {% for param in available_params %}
