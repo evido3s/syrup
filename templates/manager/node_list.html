@@ -2,13 +2,13 @@
 
 {% block header %}Nodes list{% endblock %}
 {% block content %}
-<ul>
+<table class="table table-condensed table-hover">
     {% for node in nodes %}
-        <li>
-            <a href="{% url manager.views.node_detail node.id %}">{{ node }}</a>
-        </li>
+        <tr>
+            <td><a href="{% url manager.views.node_detail node.id %}">{{ node }}</a></td>
+        </tr>
     {% empty %}
-        <li><i>No nodes found.</i></li>
+        <tr class="warning"><td><i>No nodes found.</i></td></tr>
     {% endfor %}
-</ul>
+</table>
 {% endblock %}
