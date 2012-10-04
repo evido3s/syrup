@@ -98,12 +98,13 @@ def node_delete(request, node_id):
 def node_create(request):
     template_id = int(request.POST.get('template_id'))
     link_node_id = int(request.POST.get('link_with'))
+    direction = int(request.POST.get('link_direction'))
     newname = request.POST.get('newname')
     template = Node.objects.get(id = template_id)
     link_node = Node.objects.get(id = link_node_id) if link_node_id >= 0 else None
     node = template.create_item(newname)
     if link_node:
-        node.link_with(link_node)
+        node.link_with(link_node, direction)
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'nc',
@@ -289,7 +290,7 @@ def node_detail(request, node_id):
                 'node': node,
                 'node_list': Node.objects.filter(typ=1).exclude(id=node_id),
                 'template_list': Node.objects.filter(typ=0).exclude(id=node.get_primary_template().id),
-                'template_full_list': Node.objects.filter(typ=0),
+                'primary_template_list': Node.list_primary_templates(),
                 'params': node.list_params(),
                 'available_params': node.list_available_params(),
                 'templates': node.list_templates(incl_primary = False),
@@ -337,6 +338,7 @@ def node_table(request):
                 'node_list': node_list,
                 'nodetable': nodetable,
                 'template_list': Node.objects.filter(typ=0),
+                'primary_template_list': Node.list_primary_templates(),
                 'available_params': available_params,
                 'primary_name': primary_name,
                 },

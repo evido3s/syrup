@@ -17,7 +17,7 @@
 <h2>templates</h2>
 <p>primary template:
     <a href="{% url manager.views.template_detail node.primary_template.id %}"
-        >{{ node.primary_template }}</a></p>
+        >{{ node.primary_template.get_name }}</a></p>
 <form action="{% url manager.views.node_link_template %}" method="post">
     {% csrf_token %}
     <p>
@@ -25,7 +25,7 @@
         <input type="hidden" name="node_id" value="{{node.id}}" />
         <select multiple="multiple" name="template_id" id="template_id">
         {% for template in template_list %}
-            <option value="{{template.id}}">{{ template }}</option>
+            <option value="{{template.id}}">{{ template.get_name }}</option>
         {% endfor %}
         </select>
         <input class="btn" type="submit" name="sub" value="Link" />
@@ -34,7 +34,7 @@
 <ul>
     {% for template in templates %}
         <li>
-            <a href="{% url manager.views.template_detail template.id %}">{{ template }}</a>
+            <a href="{% url manager.views.template_detail template.id %}">{{ template.get_name }}</a>
             <a href="{% url manager.views.node_unlink_template node.id template.id %}" title="unlink template">[X]</a>
         </li>
     {% empty %}
@@ -45,7 +45,7 @@
     <ul>
         {% for param in params %}
             <li>
-                {{ param.template }}: {{ param }}
+                {{ param.template.get_name }}: {{ param }}
                 {% if not param.primary %}
                 <a href="{% url manager.views.node_del_param param.id %}" title="delete parameter">[X]</a>
                 {% endif %}
@@ -61,7 +61,7 @@
         <label for="param_id">name</label>
         <select name="param_id" id="param_id">
         {% for param in available_params %}
-            <option value="{{param.id}}">{{ param.template }}: {{ param.name }}</option>
+            <option value="{{param.id}}">{{ param.template.get_name }}: {{ param.name }}</option>
         {% endfor %}
         </select>
         <label for="param_value">value</label>
@@ -94,11 +94,11 @@
         Create new linked node from template
         <input type="hidden" name="link_node_id" value="{{node.id}}" />
         <select name="template_id" id="template_id">
-        {% for template in template_full_list %}
-            <option value="{{template.id}}">{{ template }}</option>
+        {% for template in primary_template_list %}
+            <option value="{{template.id}}">{{ template.get_name }}</option>
         {% endfor %}
         </select>
-        <input type="submit" name="sub" value="Link" />
+        <input type="submit" name="sub" value="Create" />
     </p>
 </form>
 <ul>

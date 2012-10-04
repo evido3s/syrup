@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 
 class Node(models.Model):
     typ = models.IntegerField()
@@ -22,6 +23,11 @@ class Node(models.Model):
                 return u"Item%d" % ( self.id )
         elif self.typ == 2:
             return u"Connector%d" % ( self.id )
+
+    @staticmethod
+    def list_primary_templates():
+        """List all templates from which objects can be created"""
+        return Node.objects.filter(typ = 0).filter(paramstr__primary = True)
 
     @staticmethod
     def create_template(name):
@@ -81,6 +87,14 @@ class Node(models.Model):
             return self.paramstr_set.filter(primary = True).get()
         elif self.typ == 1:
             return self.paramstr_set.filter(template = self.primary_template, primary = True).get()
+
+    def is_primary_template(self):
+        assert self.typ == 0
+        try:
+            self.get_primary_param()
+            return True
+        except ObjectDoesNotExist:
+            return False
 
     def list_params(self, incl_structural = True, incl_primary = True):
         """Returns QuerySet of all parameters of this node"""

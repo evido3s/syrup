@@ -12,6 +12,11 @@
     </p>
     <p>
         <label for="link_with">Link with this node</label>
+        <select name="link_direction" id="link_direction">
+            <option value="-1">depends on (down)</option>
+            <option value="0">neutral</option>
+            <option value="1">provides (up)</option>
+        </select>
         <select name="link_with" id="link_with">
             <option value="-1"
                 {% if not link_node_id %}selected="selected"{% endif %}

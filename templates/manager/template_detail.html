@@ -14,7 +14,9 @@
     {% if not forloop.last %} &gt; {% endif %}
 {% endfor %}
 </p>
+{% if node.is_primary_template %}
 <p><a href="{% url manager.views.node_new template_id=node.id %}" class="btn btn-success">create node using this template</a></p>
+{% endif %}
 <h2>manage template's parameters</h2>
 <form action="{% url manager.views.template_add_param %}" method="post">
     {% csrf_token %}
