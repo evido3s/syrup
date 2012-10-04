@@ -1,12 +1,16 @@
 {% extends "base.html" %}
 
-{% block header %}Templates list{% endblock %}
+{% block header %}Templates{% endblock %}
+
+{% block content_menu %}
+<button class="btn btn-success" href="{% url manager.views.template_new %}">Create new template</button>
+{% endblock %}
+
 {% block content %}
-<p><a href="{% url manager.views.template_new %}">create new template</a></p>
 <table class="table table-condensed table-hover">
     {% for node in nodes %}
         <tr>
-            <td><a href="{% url manager.views.node_detail node.id %}">{{ node }}</a></td>
+            <td><a href="{% url manager.views.node_detail node.id %}">{{ node.get_name }}</a></td>
         </tr>
     {% empty %}
         <tr class="warning"><td><i>No templates found.</i></td></tr>

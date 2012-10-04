@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 
-{% block header %}{{ node }}{% endblock %}
+{% block header %}<small>template</small>:{{ node.get_name }}{% endblock %}
 {% block content %}
-<p><a href="{% url manager.views.template_list %}">templates list</a></p>
 {% if node.is_primary_template %}
-<p><a href="{% url manager.views.node_new template_id=node.id %}" class="btn btn-success">create node using this template</a></p>
+<p><a href="{% url manager.views.node_new template_id=node.id %}" class="btn btn-success">Create item using this template</a></p>
 {% endif %}
-<h2>manage template's parameters</h2>
+<h2>template's parameters</h2>
 <form action="{% url manager.views.template_add_param %}" method="post">
     {% csrf_token %}
     <table class="table">
@@ -14,7 +13,8 @@
             <tr><td>
                 {{ param }}
                 {% if not param.structural %}
-                </td><td><a href="{% url manager.views.node_del_param param.id %}" title="delete parameter"><i class="icon-remove"></i></a>
+                </td><td><i class="icon-pencil"></i></td>
+                <td><a href="{% url manager.views.node_del_param param.id %}" title="delete parameter"><i class="icon-remove"></i></a>
                 {% endif %}
             </td></tr>
         {% empty %}
@@ -27,7 +27,7 @@
     <label for="param_primary" class=checkbox>
       <input type="checkbox" name="param_primary" id="param_primary" value="x" /> primary
     </label>
-    <input class="btn" type="submit" name="sub" id="submit" value="Add this parameter" />
+    <input class="btn" type="submit" name="sub" id="submit" value="Add new parameter" />
 </form>
 <h2>nodes using this template</h2>
 <table class="table">

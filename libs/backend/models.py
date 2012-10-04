@@ -232,8 +232,8 @@ class ParamStr(models.Model):
 
     def __unicode__(self):
         return u"%s = %s%s%s" % ( self.name, self.value,
-                u" (*)" if self.structural else u"",
-                u" (!)" if self.primary else u"")
+                u" (struct)" if self.structural else u"",
+                u" (primary)" if self.primary else u"")
 
 #class Link(models.Model):
 #    node = models.ForeignKey(Node, related_name = 'link')

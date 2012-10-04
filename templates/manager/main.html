@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
-{% block header %}Syrup object manager{% endblock %}
+{% block header %}
+{% endblock %}
 {% block content %}
-<ul class="nav nav-list">
-    <li><a href="{% url manager.views.template_list %}">template list</a></li>
-    <li><a href="{% url manager.views.node_list %}">item list</a></li>
-    <li><a href="{% url manager.views.node_table %}">item report</a></li>
-    <li><a href="{% url manager.views.node_tree %}">item tree</a></li>
-</ul>
+<hr>
+<form class="form-search" style="text-align: center">
+  <div class="input-append">
+    <input type="text" class="search-query">
+    <button type="submit" class="btn">Search</button>
+  </div>
+</form>
 {% endblock %}

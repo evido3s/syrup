@@ -1,26 +1,27 @@
 {% extends "base.html" %}
 
-{% block header %}Nodes table{% endblock %}
+{% block header %}Node tables{% endblock %}
 {% block content %}
 <form class="form-inline" method="get" action="{% url manager.views.node_table %}">
-<label for="template">Template</label>
+<label for="template">List all items linked to template</label>
 <select name="template_id" id="template">
     {% for t in template_list %}
     <option value="{{t.id}}"
         {% if t.id == template.id %}selected="selected"{% endif %}
-        >{{t}}</option>
+        >{{t.get_name}}</option>
     {% endfor %}
 </select>
-<label for="subtemplate">subtemplate</label>
-<select name="subtemplate_id" id="subtemplate">
-    <option value="-1">none</option>
-    {% for t in template_list %}
-    <option value="{{t.id}}"
-        {% if t.id == subtemplate.id %}selected="selected"{% endif %}
-        >{{t}}</option>
-    {% endfor %}
-</select>
-<input class="btn btn-primary" type="submit" name="sub" value="Show" />
+<label for="subtemplate"> and sub-template</label>
+<div class="input-append">
+  <select name="subtemplate_id" id="subtemplate">
+      <option value="-1">none</option>
+      {% for t in template_list %}
+      <option value="{{t.id}}"
+          {% if t.id == subtemplate.id %}selected="selected"{% endif %}>{{t.get_name}}</option>
+      {% endfor %}
+  </select>
+  <input class="btn btn-primary" type="submit" name="sub" value="Go!" />
+</div>
 </form>
 {% if template %}
 <table class="table table-condensed table-hover">
@@ -40,7 +41,7 @@
     {% endfor %}
 </table>
 {% else %}
-<p>No items.</p>
+<em>No items here.</em>
 {% endif %}
 {% if debug %}
 <pre>

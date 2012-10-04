@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
-{% block header %}Nodes list{% endblock %}
+{% block header %}Items{% endblock %}
+
+{% block content_menu %}
+<a class="btn btn-success" href="{% url manager.views.template_list %}">Create new item from template</a>
+{% endblock %}
+
 {% block content %}
 <table class="table table-condensed table-hover">
     {% for node in nodes %}

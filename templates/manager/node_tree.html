@@ -4,12 +4,14 @@
 {% block header %}Node tree{% endblock %}
 {% block content %}
 <form class="form-inline" method="get" action="{% url manager.views.node_tree %}">
+  <div class="input-append">
     <select name="root_node_id" id="root_node_id">
         {% for n in nodes %}
         <option value="{{n.id}}">{{n}}</option>
         {% endfor %}
     </select>
-    <input class="btn" type="submit" name="sub" id="submit" value="Show" />
+    <input class="btn" type="submit" name="sub" id="submit" value="Show tree" />
+  </div>
 </form>
 <div style="font-family: monospace">
 {{root_node}}<br />
