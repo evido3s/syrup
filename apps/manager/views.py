@@ -180,7 +180,7 @@ def node_link(request):
 def node_del_param(request, param_id):
     param = ParamStr.objects.get(id = param_id)
     node = param.node
-    param.delete()
+    param.delete_param()
     if node.typ == 0:
         goto_view = 'manager.views.template_detail'
     else:

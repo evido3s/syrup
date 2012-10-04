@@ -198,6 +198,16 @@ class ParamStr(models.Model):
     structural = models.BooleanField(default = False)
     primary = models.BooleanField(default = False)
 
+    def delete_param(self):
+        if self.structural:
+            # structural parameters cannot be deleted
+            raise
+        elif self.typ == 1 and param.primary:
+            # primary parameter of object
+            raise
+        else:
+            param.delete()
+
     def __unicode__(self):
         return u"%s = %s%s%s" % ( self.name, self.value,
                 u" (*)" if self.structural else u"",
