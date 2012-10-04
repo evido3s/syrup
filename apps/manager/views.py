@@ -353,10 +353,16 @@ def walk_node_tree(node, level = 0):
     return l
 
 def node_tree(request):
-    root_node = Node.objects.get(id = 6)
-    tree = walk_node_tree(root_node, 1)
+    root_node_id = request.GET.get('root_node_id')
+    if root_node_id:
+        root_node = Node.objects.get(id = root_node_id)
+        tree = walk_node_tree(root_node, 1)
+    else:
+        root_node = None
+        tree = None
     return render_to_response('manager/node_tree.html',
             {
+                'nodes': Node.objects.filter(typ = 1),
                 'root_node': root_node,
                 'tree': tree,
                 },
