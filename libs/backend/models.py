@@ -128,6 +128,14 @@ class Node(models.Model):
         templates.extend(list(self.templates.all()))
         return templates
 
+    def list_instances(self, incl_primary = True, only_primary = False):
+        nodes = list()
+        if incl_primary or only_primary:
+            nodes.extend(list(self.primary_instances.all()))
+        if not only_primary:
+            nodes.extend(list(self.instances.all()))
+        return nodes
+
     def link_with(self, node, direction):
         """Links node (self) with another node
             direction - 0: straight, 1: up, -1: down
@@ -160,7 +168,7 @@ class Node(models.Model):
     def link_template(self, template):
         """Links node with template"""
         assert self.typ == 1 and template.typ == 0
-        self.template.add(template)
+        self.templates.add(template)
 
     def unlink_template(self, template):
         """Unlinks node with template"""
@@ -202,11 +210,11 @@ class ParamStr(models.Model):
         if self.structural:
             # structural parameters cannot be deleted
             raise
-        elif self.typ == 1 and param.primary:
+        elif self.node.typ == 1 and param.primary:
             # primary parameter of object
             raise
         else:
-            param.delete()
+            self.delete()
 
     def __unicode__(self):
         return u"%s = %s%s%s" % ( self.name, self.value,

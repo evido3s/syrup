@@ -117,7 +117,8 @@ def template_create(request):
     primary_name = request.POST.get('primary_name')
     primary_value = request.POST.get('primary_value')
     template = Node.create_template(request.POST.get('newname'))
-    template.add_param(template, primary_name, primary_value, primary = True)
+    if primary_name:
+        template.add_param(template, primary_name, primary_value, primary = True)
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'tc',
@@ -304,7 +305,7 @@ def node_table(request):
     template = Node.objects.get(id = template_id) if template_id else None
     subtemplate = Node.objects.get(id = subtemplate_id) if subtemplate_id and int(subtemplate_id) >= 0 else None
     if template:
-        node_list = Node.objects.filter(template__template = template)
+        node_list = template.list_instances(only_primary = True)
         available_params = list(template.list_params(incl_structural = False, incl_primary = False))
         if subtemplate:
             available_params.extend(list(subtemplate.list_params(incl_structural = False, incl_primary = True)))
