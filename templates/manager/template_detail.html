@@ -21,7 +21,10 @@
     <ul>
         {% for param in params %}
             <li>
-                {{ param }} <a href="{% url manager.views.node_del_param param.id %}" title="delete parameter">[X]</a>
+                {{ param }}
+                {% if not param.structural %}
+                <a href="{% url manager.views.node_del_param param.id %}" title="delete parameter">[X]</a>
+                {% endif %}
             </li>
         {% empty %}
             <li><i>No parameters found.</i></li>
