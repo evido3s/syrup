@@ -1,36 +1,8 @@
 {% extends "base.html" %}
 
-{% block header %}{{ node }}{% endblock %}
+{% block header %}{{ node.get_name }}{% endblock %}
 {% block content %}
 <p><a href="{% url manager.views.node_list %}">nodes list</a></p>
-<h2>templates</h2>
-<table class="table table-condensed">
-    <tr>
-      <td><small><a href="{% url manager.views.node_detail node.primary_template.id %}">{{ node.primary_template.get_name }}</a></small></td>
-      <td><small>primary template</small></td>
-    </tr>
-    {% for template in templates %}
-        <tr>
-            <td><a href="{% url manager.views.node_detail template.id %}">{{ template.get_name }}</a></td>
-            <td><a href="{% url manager.views.node_unlink_template node.id template.id %}" title="unlink template">[X]</a></td>
-        </tr>
-    {% empty %}
-        <tr><td><small>No more templates.</small></td><td></td></tr>
-    {% endfor %}
-</table>
-<form class="form-inline" action="{% url manager.views.node_link_template %}" method="post">
-    {% csrf_token %}
-    <p>
-        Link additional templates: 
-        <input type="hidden" name="node_id" value="{{node.id}}" />
-        <select name="template_id" id="template_id">
-        {% for template in template_list %}
-            <option value="{{template.id}}">{{ template.get_name }}</option>
-        {% endfor %}
-        </select>
-        <input class="btn btn-mini" type="submit" name="sub" value="Link" />
-    </p>
-</form>
 <h2>parameters</h2>
     <table class="table table-hover table-condensed table-bordered">
         {% for param in params %}
@@ -38,7 +10,7 @@
                 <td span=>{{ param.template.get_name }}</td><td>{{ param }}</td>
                 <td>
                   {% if not param.primary %}
-                    <a href="{% url manager.views.node_del_param param.id %}" title="delete parameter">[X]</a>
+                    <a href="{% url manager.views.node_del_param param.id %}" title="delete parameter"><i class="icon-remove"></i></a>
                   {% endif %}
                 </td>
             </tr>
@@ -57,11 +29,11 @@
         </select>
 	<div class="input-append">
           <input placeholder=value type="text" name="param_value" id="param_value" value="{{ param.value }}" />
-          <input class="btn btn-primary" type="submit" name="sub" value="Add" />
+          <input class="btn btn-primary" type="submit" name="sub" value="Add parameter" />
         </div>
     </div>
 </form>
-<h2>connected objects</h2>
+<h3>connected objects</h3>
 <form class="form-inline" action="{% url manager.views.node_link %}" method="post">
     {% csrf_token %}
     <p>
@@ -114,6 +86,34 @@
         <li><i>No connections.</i></li>
     {% endfor %}
 </ul>
+<h3>templates</h3>
+<table class="table table-condensed">
+    <tr>
+      <td><small><a href="{% url manager.views.node_detail node.primary_template.id %}">{{ node.primary_template.get_name }}</a></small></td>
+      <td><small>primary template</small></td>
+    </tr>
+    {% for template in templates %}
+        <tr>
+            <td><a href="{% url manager.views.node_detail template.id %}">{{ template.get_name }}</a></td>
+            <td><a href="{% url manager.views.node_unlink_template node.id template.id %}" title="unlink template"><i class="icon-remove"></i></a></td>
+        </tr>
+    {% empty %}
+        <tr><td><small>No more templates.</small></td><td></td></tr>
+    {% endfor %}
+</table>
+<form class="form-inline" action="{% url manager.views.node_link_template %}" method="post">
+    {% csrf_token %}
+    <p>
+        Link additional templates:
+        <input type="hidden" name="node_id" value="{{node.id}}" />
+        <select name="template_id" id="template_id">
+        {% for template in template_list %}
+            <option value="{{template.id}}">{{ template.get_name }}</option>
+        {% endfor %}
+        </select>
+        <input class="btn btn-mini" type="submit" name="sub" value="Link" />
+    </p>
+</form>
 {% if debug %}
 <pre>
 {{debug}}

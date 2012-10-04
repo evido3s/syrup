@@ -2,13 +2,12 @@
 
 {% block header %}Message{% endblock %}
 {% block content %}
-<p>{{ msg }}</p>
-<p>
+<div>
 {% if goto %}
-    <a href="{{ goto }}">continue</a>
+    <a class="btn btn-success" href="{{ goto }}">{{ msg }}</a>
 {% else %}
-    <a href="/manager/">continue</a>
+    <a class="btn" href="/manager/">{{ msg }}</a>
 {% endif %}
-</p>
+</div>
 </body>
 {% endblock %}

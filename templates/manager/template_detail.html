@@ -9,35 +9,33 @@
 <h2>manage template's parameters</h2>
 <form action="{% url manager.views.template_add_param %}" method="post">
     {% csrf_token %}
-    <ul>
+    <table class="table">
         {% for param in params %}
-            <li>
+            <tr><td>
                 {{ param }}
                 {% if not param.structural %}
-                <a href="{% url manager.views.node_del_param param.id %}" title="delete parameter">[X]</a>
+                </td><td><a href="{% url manager.views.node_del_param param.id %}" title="delete parameter"><i class="icon-remove"></i></a>
                 {% endif %}
-            </li>
+            </td></tr>
         {% empty %}
-            <li><i>No parameters found.</i></li>
+            <tr><td><i>No parameters found.</i></td></tr>
         {% endfor %}
-    </ul>
+    </table>
     <input type="hidden" name="template_id" value="{{ node.id }}" />
-    <label for="param_name">parameter name:</label>
-    <input type="text" name="param_name" id="param_name" value="" />
-    <label for="param_value">default value:</label>
-    <input type="text" name="param_value" id="param_value" value="" />
+    <input placeholder="new parameter's name" type="text" name="param_name" id="param_name" value="" />
+    <input placeholder="default value"  type="text" name="param_value" id="param_value" value="" />
     <label for="param_primary" class=checkbox>
       <input type="checkbox" name="param_primary" id="param_primary" value="x" /> primary
     </label>
     <input class="btn" type="submit" name="sub" id="submit" value="Add this parameter" />
 </form>
-<h2>instances</h2>
-<ul>
+<h2>nodes using this template</h2>
+<table class="table">
 {% for i in primary_instances %}
-    <li><a href="{% url manager.views.node_detail i.id %}">{{i}}</a> *</li>
+    <tr><td><a href="{% url manager.views.node_detail i.id %}">{{i}}</a> <i class="icon-star"></i></td></tr>
 {% endfor %}
 {% for i in instances %}
-    <li><a href="{% url manager.views.node_detail i.id %}">{{i}}</a></li>
+    <tr><td><a href="{% url manager.views.node_detail i.id %}">{{i}}</a></td></tr>
 {% endfor %}
-</ul>
+</table>
 {% endblock %}
