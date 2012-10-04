@@ -344,3 +344,21 @@ def node_table(request):
                 },
             context_instance=RequestContext(request)
             )
+def walk_node_tree(node, level = 0):
+    l = list()
+    for c,nodes in node.list_linked(-1).items():
+        n = nodes.get()
+        l.append([level, n])
+        l.extend(walk_node_tree(n, level+1))
+    return l
+
+def node_tree(request):
+    root_node = Node.objects.get(id = 6)
+    tree = walk_node_tree(root_node, 1)
+    return render_to_response('manager/node_tree.html',
+            {
+                'root_node': root_node,
+                'tree': tree,
+                },
+            context_instance=RequestContext(request)
+            )

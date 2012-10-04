@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load ranges %}
+
+{% block header %}Node tree{% endblock %}
+{% block content %}
+<div style="font-family: monospace">
+{{root_node}}<br />
+{% for indent,item in tree %}
+    {% for i in indent|times %}
+        <span>&nbsp;&nbsp;</span>
+    {% endfor %}
+    {{item}}<br />
+{% endfor %}
+</div>
+{% endblock %}
