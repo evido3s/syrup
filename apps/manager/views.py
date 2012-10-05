@@ -193,8 +193,10 @@ def node_del_param(request, param_id):
                     })
             }))
 def node_set_param(request):
+    node_id = request.POST.get('node_id')
     param_id = request.POST.get('param_id')
     param_value = request.POST.get('param_value')
+    node = Node.objects.get(id = node_id)
     param = ParamStr.objects.get(id = param_id)
     param.value = param_value
     param.save()
@@ -203,7 +205,7 @@ def node_set_param(request):
                 'msg': 'pc',
                 'goto': reverse('manager.views.node_detail',
                     kwargs = {
-                        'node_id': param.node.id
+                        'node_id': node_id
                     })
             }))
 def node_add_param(request):

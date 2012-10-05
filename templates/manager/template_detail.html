@@ -1,26 +1,43 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block header %}<small>template</small>:{{ node.get_name }}{% endblock %}
+{% block htmlhead %}
+<script type="text/javascript" src="{% static "js/parameditor.js" %}"></script>
+{% endblock %}
 {% block content %}
 {% if node.is_primary_template %}
 <p><a href="{% url manager.views.node_new template_id=node.id %}" class="btn btn-success">Create item using this template</a></p>
 {% endif %}
 <h2>template's parameters</h2>
-<form action="{% url manager.views.template_add_param %}" method="post">
+<form method="post" action="{% url manager.views.node_set_param %}">
     {% csrf_token %}
-    <table class="table">
+    <input type="hidden" name="node_id" value="{{node.id}}"></input>
+    <input type="hidden" id="param_edit_id" name="param_id" value=""></input>
+    <table class="table table-hover table-condensed table-bordered">
         {% for param in params %}
-            <tr><td>
-                {{ param }}
+            <tr>
+                <td>{{ param.name }}</td>
+                <td><span {% if not param.structural %}class="param_edit"{%endif%}
+                        param_id="{{param.id}}" id="param_id_{{param.id}}"
+                        >{{ param.value }}</span></td>
+                <td>
                 {% if not param.structural %}
-                </td><td><i class="icon-pencil"></i></td>
-                <td><a href="{% url manager.views.node_del_param param.id %}" title="delete parameter"><i class="icon-remove"></i></a>
+                    <span class="icon-pencil"
+                        onclick="jQuery('#param_id_{{param.id}}').trigger('click');"></span>
+                    <a href="{% url manager.views.node_del_param param.id %}" title="delete parameter"><i class="icon-remove"></i></a>
                 {% endif %}
-            </td></tr>
+                {% if param.structural %}<span class="pull-right">[S]</span>{% endif %}
+                {% if param.primary %}<span class="pull-right">[P]</span>{% endif %}
+                </td>
+            </tr>
         {% empty %}
             <tr><td><i>No parameters found.</i></td></tr>
         {% endfor %}
     </table>
+</form>
+<form action="{% url manager.views.template_add_param %}" method="post">
+    {% csrf_token %}
     <input type="hidden" name="template_id" value="{{ node.id }}" />
     <input placeholder="new parameter's name" type="text" name="param_name" id="param_name" value="" />
     <input placeholder="default value"  type="text" name="param_value" id="param_value" value="" />
