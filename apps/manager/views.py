@@ -357,11 +357,18 @@ def node_tree(request):
     else:
         root_node = None
         tree = None
-    return render_to_response('manager/node_tree.html',
-            {
-                'nodes': Node.objects.filter(typ = 1),
-                'root_node': root_node,
-                'tree': tree,
-                },
-            context_instance=RequestContext(request)
-            )
+    return render_to_response('manager/node_tree.html', {
+            'nodes': Node.objects.filter(typ = 1),
+            'root_node': root_node,
+            'tree': tree,
+            }, context_instance=RequestContext(request))
+
+def search(request):
+    query = request.GET.get('q')
+    params = ParamStr.objects.filter(value__icontains = query)
+    #nodes = Node.objects.filter(paramstr__value__ilike = query)
+    return render_to_response('manager/search_results.html', {
+            'query': query,
+            'params': params,
+            }, context_instance=RequestContext(request))
+

@@ -4,10 +4,11 @@
 {% endblock %}
 {% block content %}
 <hr>
-<form class="form-search" style="text-align: center">
+<form class="form-search" method="get" action="{% url manager.views.search %}"
+    style="text-align: center">
   <div class="input-append">
-    <input type="text" class="search-query">
-    <button type="submit" class="btn">Search</button>
+    <input type="text" class="search-query" name="q" />
+    <input type="submit" class="btn" value="Search" />
   </div>
 </form>
 {% endblock %}
