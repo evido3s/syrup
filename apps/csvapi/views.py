@@ -81,9 +81,7 @@ def by_template_name(request):
     r.write('\n')
     for row in nodetable:
         r.write(str(row['node'].id)+SEP)
-        r.write(SEP)
         r.write(row['node'].get_name()+SEP)
-        r.write(SEP)
         first = True
         for field in row['fields']:
             if first: first = False
