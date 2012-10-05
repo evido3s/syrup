@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
-{% block header %}<small>template</small>:{{ node.get_name }}{% endblock %}
+{% block header %}<small>template:</small>{{ node.get_name }}{% endblock %}
 {% block htmlhead %}
 <script type="text/javascript" src="{% static "js/parameditor.js" %}"></script>
 {% endblock %}
 {% block content %}
 {% if node.is_primary_template %}
 <p><a href="{% url manager.views.node_new template_id=node.id %}" class="btn btn-success">Create item using this template</a></p>
+{% else %}
+<p class="text-warning">You cannot use this template to create item as this is not a primary template.</p>
+<p class="text-info">To make this template primary add primary parameter to this template.</p>
 {% endif %}
-<h2>template's parameters</h2>
+<h3>template's parameters</h3>
 <form method="post" action="{% url manager.views.node_set_param %}">
     {% csrf_token %}
     <input type="hidden" name="node_id" value="{{node.id}}"></input>
@@ -46,7 +49,7 @@
     </label>
     <input class="btn" type="submit" name="sub" id="submit" value="Add new parameter" />
 </form>
-<h2>nodes using this template</h2>
+<h3>nodes using this template</h3>
 <table class="table">
 {% for i in primary_instances %}
     <tr><td><a href="{% url manager.views.node_detail i.id %}">{{i}}</a> <i class="icon-star"></i></td></tr>

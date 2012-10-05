@@ -2,7 +2,7 @@
 
 {% block header %}Node tables{% endblock %}
 {% block content %}
-<form class="form-inline" method="get" action="{% url manager.views.node_table %}">
+<form class="form" method="get" action="{% url manager.views.node_table %}">
 <label for="template">List all items linked to template</label>
 <select name="template_id" id="template">
     {% for t in template_list %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
-{% block header %}<small>{{ node.primary_template.get_name }}::</small>{{ node.get_name }}{% endblock %}
+{% block header %}<small>{{ node.primary_template.get_name }}:</small>{{ node.get_name }}{% endblock %}
 {% block htmlhead %}
 <script type="text/javascript" src="{% static "js/parameditor.js" %}"></script>
 {% endblock %}
@@ -14,11 +14,11 @@
     <table class="table table-hover table-condensed table-bordered">
         {% for param in params %}
             <tr>
-                <td>{{ param.template.get_name }}</td>
-                <td>{{ param.name }}</td>
-                <td><span {% if not param.primary %}class="param_edit"{%endif%}
+                <td><small><span class="muted">template:</span>{{ param.template.get_name }}</small></td>
+                <td><em>{{ param.name }}</em></td>
+                <td><strong><span {% if not param.primary %}class="param_edit"{%endif%}
                         param_id="{{param.id}}" id="param_id_{{param.id}}"
-                        >{{ param.value }}</span></td>
+                        >{{ param.value }}</strong></span></strong></td>
                 <td>
                   {% if not param.primary %}
                     <span class="icon-pencil"
@@ -28,7 +28,7 @@
                 </td>
             </tr>
         {% empty %}
-            <tr><td><i>No parameters.</i></td></tr>
+            <tr><td><i>No parameters...add some!</i></td></tr>
         {% endfor %}
     </table>
 </form>

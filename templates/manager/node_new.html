@@ -7,8 +7,7 @@
     <input type="hidden" name="template_id" value="{{ template.id }}" />
     <p class="text-warning">Using primary template: {{ template }}</p>
     <p>
-        <label for="newname">Primary parameter value ({{ primary_param.name }})</label>
-        <input type="text" name="newname" id="newname" value="{{ primary_param.value }}" />
+        <input placeholder="{{ primary_param.name }}" type="text" name="newname" id="newname" value="{{ primary_param.value }}" />
     </p>
     <p>
         <label for="link_with">Link with this node</label>
