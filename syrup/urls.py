@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^manager/', include('manager.urls')),
+    url(r'^csv/', include('csvapi.urls')),
     url(r'^$', 'manager.views.redir_main'),
 )
 

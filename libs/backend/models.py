@@ -13,12 +13,12 @@ class Node(models.Model):
     def __unicode__(self):
         if self.typ == 0:
             try:
-                return u"template %s" % ( self.get_name() )
+                return u"(template) %s" % ( self.get_name() )
             except:
                 return u"Template%d" % ( self.id )
         elif self.typ == 1:
             try:
-                return u"%s %s" % ( self.get_primary_template().get_name(), self.get_name() )
+                return u"(%s) %s" % ( self.get_primary_template().get_name(), self.get_name() )
             except:
                 return u"Item%d" % ( self.id )
         elif self.typ == 2:
