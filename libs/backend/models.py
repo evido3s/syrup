@@ -188,12 +188,12 @@ class Node(models.Model):
         """Unlinks node with template"""
         assert self.typ == 1 and template.typ == 0
         # check if template is linked
-        self.template.get(id = template.id)
+        self.templates.get(id = template.id)
         # delete parameters comming from that template
         for param in ParamStr.objects.filter(node = self, template = template):
             param.delete()
         # delete template link
-        self.template.remove(template)
+        self.templates.remove(template)
 
     def get_name(self):
         """Return object name (primary parameter of item or template_name of template)."""
