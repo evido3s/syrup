@@ -1,15 +1,27 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block header %}<small>{{ node.primary_template.get_name }}::</small>{{ node.get_name }}{% endblock %}
+{% block htmlhead %}
+<script type="text/javascript" src="{% static "js/parameditor.js" %}"></script>
+{% endblock %}
 {% block content %}
 <h4>parameters</h4>
+<form method="post" action="{% url manager.views.node_set_param %}">
+    {% csrf_token %}
+    <input type="hidden" id="param_edit_id" name="param_id" value=""></input>
     <table class="table table-hover table-condensed table-bordered">
         {% for param in params %}
             <tr>
-                <td>{{ param.template.get_name }}</td><td>{{ param }}</td>
+                <td>{{ param.template.get_name }}</td>
+                <td>{{ param.name }}</td>
+                <td><span {% if not param.primary %}class="param_edit"{%endif%}
+                        param_id="{{param.id}}" id="param_id_{{param.id}}"
+                        >{{ param.value }}</span></td>
                 <td>
                   {% if not param.primary %}
-                    <i class="icon-pencil"></i></a></td><td>
+                    <span class="icon-pencil"
+                        onclick="jQuery('#param_id_{{param.id}}').trigger('click');"></span>
                     <a href="{% url manager.views.node_del_param param.id %}" title="delete parameter"><i class="icon-remove"></i></a>
                   {% endif %}
                 </td>
@@ -18,6 +30,7 @@
             <tr><td><i>No parameters.</i></td></tr>
         {% endfor %}
     </table>
+</form>
 <form class="form-inline" action="{% url manager.views.node_add_param %}" method="post">
     {% csrf_token %}
     <div>

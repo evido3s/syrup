@@ -56,6 +56,7 @@ msgs = {
     'tl': 'Template linked.',
     'tul': 'Template unlinked.',
     'pa': 'Parameter added.',
+    'pc': 'Parameter changed.',
     'pd': 'Parameter deleted.',
 }
 
@@ -189,6 +190,20 @@ def node_del_param(request, param_id):
                 'goto': reverse('manager.views.node_detail',
                     kwargs = {
                         'node_id': node.id
+                    })
+            }))
+def node_set_param(request):
+    param_id = request.POST.get('param_id')
+    param_value = request.POST.get('param_value')
+    param = ParamStr.objects.get(id = param_id)
+    param.value = param_value
+    param.save()
+    return HttpResponseRedirect( reverse('manager.views.message',
+            kwargs = {
+                'msg': 'pc',
+                'goto': reverse('manager.views.node_detail',
+                    kwargs = {
+                        'node_id': param.node.id
                     })
             }))
 def node_add_param(request):
