@@ -224,7 +224,7 @@ class ParamStr(models.Model):
         if self.structural:
             # structural parameters cannot be deleted
             raise
-        elif self.node.typ == 1 and param.primary:
+        elif self.node.typ == 1 and self.primary:
             # primary parameter of object
             raise
         else:
