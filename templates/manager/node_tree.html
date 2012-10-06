@@ -14,6 +14,7 @@
     <input class="btn" type="submit" name="sub" id="submit" value="Show tree">
   </div>
 </form>
+{% if root_node %}
 <div style="font-family: monospace">
 <a href="{% url manager.views.node_detail root_node.id %}">{{root_node}}</a><br>
 {% for indent,item in tree %}
@@ -23,4 +24,7 @@
     <a href="{% url manager.views.node_detail item.id %}">{{item}}</a><br>
 {% endfor %}
 </div>
+{% else %}
+<p>No root node selected.</p>
+{% endif %}
 {% endblock %}
