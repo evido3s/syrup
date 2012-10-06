@@ -11,16 +11,16 @@
         <option value="{{n.id}}">{{n}}</option>
         {% endfor %}
     </select>
-    <input class="btn" type="submit" name="sub" id="submit" value="Show tree" />
+    <input class="btn" type="submit" name="sub" id="submit" value="Show tree">
   </div>
 </form>
 <div style="font-family: monospace">
-{{root_node}}<br />
+<a href="{% url manager.views.node_detail root_node.id %}">{{root_node}}</a><br>
 {% for indent,item in tree %}
     {% for i in indent|times %}
         <span>&nbsp;&nbsp;</span>
     {% endfor %}
-    {{item}}<br />
+    <a href="{% url manager.views.node_detail item.id %}">{{item}}</a><br>
 {% endfor %}
 </div>
 {% endblock %}
