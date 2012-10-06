@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% block pagetitle %}new template{% endblock %}
 {% block header %}Create new template{% endblock %}
 {% block content %}
 <form action="{% url manager.views.template_create %}" method="post">

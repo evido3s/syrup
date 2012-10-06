@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load ranges %}
 
+{% block pagetitle %}node tree{% endblock %}
 {% block header %}Node tree{% endblock %}
 {% block content %}
 <form class="form-inline" method="get" action="{% url manager.views.node_tree %}">

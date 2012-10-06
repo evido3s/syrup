@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
+{% block pagetitle %}({{ node.primary_template.get_name }}) {{ node.get_name }}{% endblock %}
 {% block header %}<small>{{ node.primary_template.get_name }}:</small>{{ node.get_name }}{% endblock %}
 {% block htmlhead %}
 <script type="text/javascript" src="{% static "js/parameditor.js" %}"></script>
@@ -9,8 +10,8 @@
 <h4>parameters</h4>
 <form method="post" action="{% url manager.views.node_set_param %}">
     {% csrf_token %}
-    <input type="hidden" name="node_id" value="{{node.id}}"></input>
-    <input type="hidden" id="param_edit_id" name="param_id" value=""></input>
+    <input type="hidden" name="node_id" value="{{node.id}}">
+    <input type="hidden" id="param_edit_id" name="param_id" value="">
     <table class="table table-hover table-condensed table-bordered">
         {% for param in params %}
             <tr>
@@ -18,7 +19,7 @@
                 <td><em>{{ param.name }}</em></td>
                 <td><strong><span {% if not param.primary %}class="param_edit"{%endif%}
                         param_id="{{param.id}}" id="param_id_{{param.id}}"
-                        >{{ param.value }}</strong></span></strong></td>
+                        >{{ param.value }}</span></strong></td>
                 <td>
                   {% if not param.primary %}
                     <span class="icon-pencil"
@@ -35,15 +36,15 @@
 <form class="form-inline" action="{% url manager.views.node_add_param %}" method="post">
     {% csrf_token %}
     <div>
-        <input type="hidden" name="node_id" value="{{node.id}}" />
+        <input type="hidden" name="node_id" value="{{node.id}}">
         <select name="param_id" id="param_id">
         {% for param in available_params %}
             <option value="{{param.id}}">{{ param.template.get_name }}: {{ param.name }}</option>
         {% endfor %}
         </select>
 	<div class="input-append">
-          <input placeholder=value type="text" name="param_value" id="param_value" value="{{ param.value }}" />
-          <input class="btn btn-primary" type="submit" name="sub" value="Add parameter" />
+          <input placeholder=value type="text" name="param_value" id="param_value" value="{{ param.value }}">
+          <input class="btn btn-primary" type="submit" name="sub" value="Add parameter">
         </div>
     </div>
 </form>
@@ -51,7 +52,7 @@
 <form class="form-inline" action="{% url manager.views.node_link %}" method="post">
     {% csrf_token %}
     <div>
-        <input type="hidden" name="node_id" value="{{node.id}}" />
+        <input type="hidden" name="node_id" value="{{node.id}}">
         <select name="link_direction" id="link_direction">
             <option value="-1">depends on (down)</option>
             <option value="0">neutral</option>
@@ -63,23 +64,21 @@
             <option value="{{link_node.id}}">{{ link_node }}</option>
         {% endfor %}
         </select>
-        <input class="btn" type="submit" name="sub" value="Link with this object" />
+        <input class="btn" type="submit" name="sub" value="Link with this object">
       </div>
     </div>
 </form>
 <form class="form-inline" action="{% url manager.views.node_new %}" method="get">
     {% csrf_token %}
-    <p>
-      <div class="input-append">
-        <input type="hidden" name="link_node_id" value="{{node.id}}" />
-        <select name="template_id" id="template_id">
+    <div class="input-append">
+        <input type="hidden" name="link_node_id" value="{{node.id}}">
+        <select name="template_id">
         {% for template in primary_template_list %}
             <option value="{{template.id}}">{{ template.get_name }}</option>
         {% endfor %}
         </select>
-        <input class="btn" type="submit" name="sub" value="Create linked node from this template" />
-      </div>
-    </p>
+        <input class="btn" type="submit" name="sub" value="Create linked node from this template">
+    </div>
 </form>
 <ul>
     {% for direction,connector,connected_nodes in connected %}
@@ -119,17 +118,15 @@
 </table>
 <form class="form-inline" action="{% url manager.views.node_link_template %}" method="post">
     {% csrf_token %}
-    <p>
-      <div class="input-append">
-        <input type="hidden" name="node_id" value="{{node.id}}" />
-        <select name="template_id" id="template_id">
+    <div class="input-append">
+        <input type="hidden" name="node_id" value="{{node.id}}">
+        <select name="template_id">
         {% for template in template_list %}
             <option value="{{template.id}}">{{ template.get_name }}</option>
         {% endfor %}
         </select>
-        <input class="btn" type="submit" name="sub" value="Link this additional template" />
-      </div>
-    </p>
+        <input class="btn" type="submit" name="sub" value="Link this additional template">
+    </div>
 </form>
 {% if debug %}
 <pre>

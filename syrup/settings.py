@@ -43,6 +43,9 @@ TIME_ZONE = 'Europe/Bratislava'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
+#DEFAULT_CHARSET = 'utf-8'
+#DEFAULT_CONTENT_TYPE = 'text/html'
+
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not

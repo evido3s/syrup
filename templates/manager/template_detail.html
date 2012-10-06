@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
+{% block pagetitle %}(template) {{ node.get_name }}{% endblock %}
 {% block header %}<small>template:</small>{{ node.get_name }}{% endblock %}
 {% block htmlhead %}
 <script type="text/javascript" src="{% static "js/parameditor.js" %}"></script>
@@ -15,15 +16,15 @@
 <h3>template's parameters</h3>
 <form method="post" action="{% url manager.views.node_set_param %}">
     {% csrf_token %}
-    <input type="hidden" name="node_id" value="{{node.id}}"></input>
-    <input type="hidden" id="param_edit_id" name="param_id" value=""></input>
+    <input type="hidden" name="node_id" value="{{node.id}}">
+    <input type="hidden" id="param_edit_id" name="param_id" value="">
     <table class="table table-hover table-condensed table-bordered">
         {% for param in params %}
             <tr>
-                <td>{{ param.name }}</td>
-                <td><span {% if not param.structural %}class="param_edit"{%endif%}
+                <td><em>{{ param.name }}</em></td>
+                <td><strong><span {% if not param.structural %}class="param_edit"{%endif%}
                         param_id="{{param.id}}" id="param_id_{{param.id}}"
-                        >{{ param.value }}</span></td>
+                        >{{ param.value }}</span></strong></td>
                 <td>
                 {% if not param.structural %}
                     <span class="icon-pencil"
@@ -41,13 +42,13 @@
 </form>
 <form action="{% url manager.views.template_add_param %}" method="post">
     {% csrf_token %}
-    <input type="hidden" name="template_id" value="{{ node.id }}" />
-    <input placeholder="new parameter's name" type="text" name="param_name" id="param_name" value="" />
-    <input placeholder="default value"  type="text" name="param_value" id="param_value" value="" />
+    <input type="hidden" name="template_id" value="{{ node.id }}">
+    <input placeholder="new parameter's name" type="text" name="param_name" id="param_name" value="">
+    <input placeholder="default value"  type="text" name="param_value" id="param_value" value="">
     <label for="param_primary" class=checkbox>
-      <input type="checkbox" name="param_primary" id="param_primary" value="x" /> primary
+      <input type="checkbox" name="param_primary" id="param_primary" value="x"> primary
     </label>
-    <input class="btn" type="submit" name="sub" id="submit" value="Add new parameter" />
+    <input class="btn" type="submit" name="sub" id="submit" value="Add new parameter">
 </form>
 <h3>nodes using this template</h3>
 <table class="table">
