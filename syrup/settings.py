@@ -155,7 +155,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'backend',
     'manager',
-    'csv',
+    'csvapi',
+    'zabsync',
 )
 
 # A sample logging configuration. The only tangible logging
