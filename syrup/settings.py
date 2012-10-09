@@ -155,7 +155,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'backend',
     'manager',
-    'csv',
+    'csvapi',
+    'zabsync',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -186,3 +187,10 @@ LOGGING = {
         },
     }
 }
+
+ZABBIX_API = {
+    'url': 'http://zabbix.slsp.sk/zabbix-slsp/api_jsonrpc.php',
+    'user': 'apitest',
+    'pass': 'atest9',
+}
+

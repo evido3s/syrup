@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^manager/', include('manager.urls')),
     url(r'^csv/', include('csvapi.urls')),
+    url(r'^zabsync/', include('zabsync.urls')),
     url(r'^$', 'manager.views.redir_main'),
 )
 

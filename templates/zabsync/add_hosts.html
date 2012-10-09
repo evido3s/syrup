@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block pagetitle %}zabbix sync{% endblock %}
+{% block header %}Zabbix sync hosts{% endblock %}
+{% block content %}
+<h2>Hosts</h2>
+<table class="table">
+{% for host in hosts %}
+    <tr>
+        <td>{{host.host}} ({{host.hostid}})</td>
+    </tr>
+{% empty %}
+    <tr><td>empty</td></tr>
+{% endfor %}
+</table>
+<pre>
+{{debug}}
+</pre>
+{% endblock %}

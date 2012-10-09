@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
+import backend.exceptions as exceptions
 
 class Node(models.Model):
     typ = models.IntegerField()
@@ -32,6 +33,10 @@ class Node(models.Model):
     @staticmethod
     def create_template(name):
         """class method, creates and returns new template with parameter name"""
+        # check for duplicate name
+        dup = Node.objects.filter(paramstr__name__exact = 'template_name').filter(paramstr__value__iexact = name)
+        if dup:
+            raise exceptions.DuplicateItemError('Template with given name already exists.', dup)
         template = Node.objects.create(typ = 0)
         template.add_param(template, 'template_name', name, structural = True)
         return template
@@ -65,6 +70,13 @@ class Node(models.Model):
         """should be called on a template, creates instance of the template, returning the new node"""
         assert self.typ == 0
         primary_name = self.get_primary_param().name
+        # check for duplicate name
+        dup = Node.objects.filter(
+                paramstr__name__exact = primary_name).filter(
+                paramstr__value__iexact = primary_value).filter(
+                primary_template = self)
+        if dup:
+            raise exceptions.DuplicateItemError('Item of same type with same name already exists.', dup)
         item = self.primary_instances.create(typ = 1)
         item.add_param(self, primary_name, primary_value, primary = True)
         return item
