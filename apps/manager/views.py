@@ -82,14 +82,8 @@ def node_delete(request, node_id):
     node_history = request.session['node_history']
     node = Node.objects.get(id = node_id)
     node_history.remove_node(node_id)
-    node.delete()
-    try:
-        goto = reverse('manager.views.node_detail',
-                    kwargs = {
-                        'node_id': node_history.get_last()
-                    })
-    except:
-        goto = reverse('manager.views.main')
+    node.delete_node()
+    goto = reverse('manager.views.node_list')
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'nd',

@@ -187,3 +187,10 @@ LOGGING = {
         },
     }
 }
+
+ZABBIX_API = {
+    'url': 'http://zabbix.slsp.sk/zabbix-slsp/api_jsonrpc.php',
+    'user': 'apitest',
+    'pass': 'atest9',
+}
+

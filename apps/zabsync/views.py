@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 
 from backend.models import *
-import jsonrpclib
+from zabbixapi import ZabbixAPI
 
 msgs = {
     #'': 'Template created.',
@@ -23,9 +23,35 @@ def message(request, msg, goto = None):
             }, context_instance=RequestContext(request))
 
 def main(request):
-    
-    return render_to_response('zabsync/main.html', {},
-            context_instance=RequestContext(request))
+    za = ZabbixAPI()
+    za.login()
+    try:
+        groups = za.list_groups()
+    except:
+        groups = None
+    return render_to_response('zabsync/main.html', {
+            'groups': groups,
+            'primary_templates': Node.list_primary_templates(),
+            'templates': Node.objects.filter(typ=0),
+            },context_instance=RequestContext(request))
+
+def add_hosts_by_group(request):
+    groups = request.GET.getlist('group')
+    template_id = int(request.GET.get('template_id'))
+    subtemplate_id = int(request.GET.get('subtemplate_id'))
+    template = Node.objects.get(id = template_id)
+    subtemplate = Node.objects.get(id = subtemplate_id) if subtemplate_id >= 0 else None
+    za = ZabbixAPI()
+    za.login()
+    hosts = za.hosts_by_group(groups)
+    for host in hosts:
+        node = template.create_item(host['host'])
+        if subtemplate:
+            node.link_template(subtemplate)
+    return render_to_response('zabsync/add_hosts.html', {
+            'hosts': hosts,
+            'debug': repr(hosts)
+            },context_instance=RequestContext(request))
 
 #@node_history
 #def node_delete(request, node_id):

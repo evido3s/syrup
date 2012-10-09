@@ -11,7 +11,9 @@
 <table class="table table-condensed table-hover">
     {% for node in nodes %}
         <tr>
-            <td><a href="{% url manager.views.node_detail node.id %}">{{ node }}</a></td>
+            <td>
+                <a href="{% url manager.views.node_detail node.id %}">{{ node }}</a>
+                <a class="icon-remove" href="{% url manager.views.node_delete node.id %}" title="delete node"></a>
         </tr>
     {% empty %}
         <tr class="warning"><td><i>No nodes found.</i></td></tr>

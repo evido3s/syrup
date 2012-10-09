@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('zabsync.views',
     url(r'^$', 'main'),
+    url(r'^addhost$', 'add_hosts_by_group'),
     #url(r'^node/delparam/(?P<param_id>\d+)$', 'node_del_param'),
     #url(r'^msg/(?P<msg>\w+)$', 'message'),
     #url(r'^msg/(?P<msg>\w+)/(?P<goto>[\w%/]+)$', 'message'),
