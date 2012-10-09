@@ -4,14 +4,15 @@
 {% block header %}Items{% endblock %}
 
 {% block content_menu %}
-<a class="btn btn-success btn-small" href="{% url manager.views.template_list %}">Create new item from template</a>
+<a class="btn btn-success btn-small" href="{% url manager.views.template_list %}">Create new item</a>
 {% endblock %}
 
 {% block content %}
 <table class="table table-condensed table-hover">
     {% for node in nodes %}
         <tr>
-            <td><a href="{% url manager.views.node_detail node.id %}">{{ node }}</a></td>
+            <td><a href="{% url manager.views.node_detail node.id %}">{{ node.get_name }}</a></td>
+            <td>{{ node.primary_template.get_name }}</td>
         </tr>
     {% empty %}
         <tr class="warning"><td><i>No nodes found.</i></td></tr>

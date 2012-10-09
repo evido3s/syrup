@@ -7,15 +7,14 @@
 <script type="text/javascript" src="{% static "js/parameditor.js" %}"></script>
 {% endblock %}
 {% block content %}
-<h4>parameters</h4>
 <form method="post" action="{% url manager.views.node_set_param %}">
     {% csrf_token %}
     <input type="hidden" name="node_id" value="{{node.id}}">
     <input type="hidden" id="param_edit_id" name="param_id" value="">
     <table class="table table-hover table-condensed table-bordered">
         {% for param in params %}
-            <tr>
-                <td><small><span class="muted">template:</span>{{ param.template.get_name }}</small></td>
+            <tr class="info">
+                <td><small><span class="muted">t:</span>{{ param.template.get_name }}</small></td>
                 <td><em>{{ param.name }}</em></td>
                 <td><strong><span {% if not param.primary %}class="param_edit"{%endif%}
                         param_id="{{param.id}}" id="param_id_{{param.id}}"
@@ -24,6 +23,8 @@
                   {% if not param.primary %}
                     <span class="icon-pencil"
                         onclick="jQuery('#param_id_{{param.id}}').trigger('click');"></span>
+                </td>
+                <td>
                     <a href="{% url manager.views.node_del_param param.id %}" title="delete parameter"><i class="icon-remove"></i></a>
                   {% endif %}
                 </td>
@@ -48,6 +49,7 @@
         </div>
     </div>
 </form>
+<hr>
 <h4>connected objects</h4>
 <form class="form-inline" action="{% url manager.views.node_link %}" method="post">
     {% csrf_token %}
@@ -101,6 +103,7 @@
         <!-- <li><i>No connections.</i></li> -->
     {% endfor %}
 </ul>
+<hr>
 <h4>linked templates</h4>
 <table class="table table-condensed">
     <tr>
@@ -113,7 +116,7 @@
             <td><small><a href="{% url manager.views.node_unlink_template node.id template.id %}" title="unlink template"><i class="icon-remove"></i></a></small></td>
         </tr>
     {% empty %}
-        <tr><td><small>No more templates.</small></td><td></td></tr>
+        <!-- <tr><td><small>No more templates.</small></td><td></td></tr> -->
     {% endfor %}
 </table>
 <form class="form-inline" action="{% url manager.views.node_link_template %}" method="post">
@@ -125,7 +128,7 @@
             <option value="{{template.id}}">{{ template.get_name }}</option>
         {% endfor %}
         </select>
-        <input class="btn" type="submit" name="sub" value="Link this additional template">
+        <input class="btn" type="submit" name="sub" value="Link this template">
     </div>
 </form>
 {% if debug %}
