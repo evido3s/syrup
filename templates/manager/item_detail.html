@@ -16,15 +16,15 @@
             <tr class="info">
                 <td><small><span class="muted">t:</span>{{ param.template.get_name }}</small></td>
                 <td><em>{{ param.name }}</em></td>
-                <td><strong><span {% if not param.primary %}class="param_edit"{%endif%}
+                <td><strong><span class="param_edit"
                         param_id="{{param.id}}" id="param_id_{{param.id}}"
                         >{{ param.value }}</span></strong></td>
                 <td>
-                  {% if not param.primary %}
                     <span class="icon-pencil"
                         onclick="jQuery('#param_id_{{param.id}}').trigger('click');"></span>
                 </td>
                 <td>
+                  {% if not param.primary %}
                     <a href="{% url manager.views.node_del_param param.id %}" title="delete parameter"><i class="icon-remove"></i></a>
                   {% endif %}
                 </td>
