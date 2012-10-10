@@ -81,9 +81,9 @@ class Node(models.Model):
         item.add_param(self, primary_name, primary_value, primary = True)
         return item
 
-    def add_param(self, template, name, value, structural = False, primary = False):
+    def add_param(self, template, name, value, structural = False, primary = False, static = False):
         return self.paramstr_set.create(template = template, name = name, value = value,
-                primary = primary, structural = structural)
+                primary = primary, structural = structural, static = static)
 
     def set_param(self, template, name, value):
         param = self.paramstr_set.filter(template = template, name = name).get()
@@ -231,6 +231,7 @@ class ParamStr(models.Model):
     value = models.CharField(max_length = 1024, blank = True, null = True)
     structural = models.BooleanField(default = False)
     primary = models.BooleanField(default = False)
+    static = models.BooleanField(default = False)
 
     def delete_param(self):
         if self.structural:

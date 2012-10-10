@@ -33,6 +33,7 @@
                 {% endif %}
                 {% if param.structural %}<span class="pull-right">[S]</span>{% endif %}
                 {% if param.primary %}<span class="pull-right">[P]</span>{% endif %}
+                {% if param.static %}<span class="pull-right">[static]</span>{% endif %}
                 </td>
             </tr>
         {% empty %}
@@ -45,8 +46,11 @@
     <input type="hidden" name="template_id" value="{{ node.id }}">
     <input placeholder="new parameter's name" type="text" name="param_name" id="param_name" value="">
     <input placeholder="default value"  type="text" name="param_value" id="param_value" value="">
-    <label for="param_primary" class=checkbox>
+    <label for="param_primary" class="checkbox">
       <input type="checkbox" name="param_primary" id="param_primary" value="x"> primary
+    </label>
+    <label for="param_static" class="checkbox">
+      <input type="checkbox" name="param_static" id="param_static" value="x"> static
     </label>
     <input class="btn" type="submit" name="sub" id="submit" value="Add new parameter">
 </form>

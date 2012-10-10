@@ -222,8 +222,9 @@ def template_add_param(request):
     param_name = request.POST.get('param_name')
     param_value = request.POST.get('param_value')
     primary = True if request.POST.get('param_primary') == 'x' else False
+    static = True if request.POST.get('param_static') == 'x' else False
     template = Node.objects.get(id = template_id)
-    template.add_param(template, param_name, param_value, primary = primary)
+    template.add_param(template, param_name, param_value, primary = primary, static = static)
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'pa',
