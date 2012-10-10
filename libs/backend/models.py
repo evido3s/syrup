@@ -66,6 +66,17 @@ class Node(models.Model):
             # if so, delete the connector itself
             connector.delete()
 
+    def update_static_params(self):
+        for t in self.templates.all():
+            for p in t.list_params(incl_structural = False, incl_primary = False,
+                    incl_static = True, incl_normal = False):
+                try:
+                    param = self.paramstr_set.filter(template = t).filter(name = p.name).get()
+                except ObjectDoesNotExist:
+                    self.add_param(t, p.name, p.value, static = True)
+                else:
+                    param.value = p.value
+
     def create_item(self, primary_value):
         """should be called on a template, creates instance of the template, returning the new node"""
         assert self.typ == 0
@@ -79,6 +90,7 @@ class Node(models.Model):
             raise exceptions.DuplicateItemError('Item of same type with same name already exists.', dup)
         item = self.primary_instances.create(typ = 1)
         item.add_param(self, primary_name, primary_value, primary = True)
+        item.update_static_params()
         return item
 
     def add_param(self, template, name, value, structural = False, primary = False, static = False):
@@ -108,13 +120,17 @@ class Node(models.Model):
         except ObjectDoesNotExist:
             return False
 
-    def list_params(self, incl_structural = True, incl_primary = True):
+    def list_params(self, incl_structural = True, incl_primary = True, incl_static = True, incl_normal = True):
         """Returns QuerySet of all parameters of this node"""
         paramset = self.paramstr_set
+        if not incl_normal:
+            paramset = paramset.exclude(static = False, structural = False, primary = False)
         if not incl_structural:
             paramset = paramset.exclude(structural = True)
         if not incl_primary:
             paramset = paramset.exclude(primary = True)
+        if not incl_static:
+            paramset = paramset.exclude(static = True)
         return paramset.all()
 
     def list_available_params(self):
@@ -195,6 +211,7 @@ class Node(models.Model):
         """Links node with template"""
         assert self.typ == 1 and template.typ == 0
         self.templates.add(template)
+        self.update_static_params()
 
     def unlink_template(self, template):
         """Unlinks node with template"""
