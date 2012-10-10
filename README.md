@@ -14,7 +14,7 @@ Contact
 -------
 All your requests, inquiries or comments should be directed to
 [Syrup mailing list](http://www.coders.sk/lists/listinfo/syrup) at e-mail address
-[syrup@lists.coders.sk].
+syrup@lists.coders.sk .
 
 If you find any bugs, please report them in the [Syrup issue tracking](https://github.com/beli-sk/syrup/issues) system at Github
 
