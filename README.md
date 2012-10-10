@@ -3,13 +3,31 @@ Syrup
 
 Open source Configuration Management Database (CMDB) system.
 
-License
--------
-
-This software is licensed under terms of the [Simplified (2-cluase) BSD License](http://opensource.org/licenses/BSD-2-Clause) as approved by the Open Source Initiative.
-
-
 Documentation
 -------------
-
 More info can be found in [Syrup wiki](https://github.com/beli-sk/syrup/wiki).
+
+Contact
+-------
+All your requests, inquiries or comments should be directed to
+[Syrup mailing list](http://www.coders.sk/lists/listinfo/syrup) at e-mail address
+syrup@lists.coders.sk
+
+License
+-------
+```
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/ .
+```
+You find a copy of the GNU General Public License in file COPYING distributed with the software.
+
