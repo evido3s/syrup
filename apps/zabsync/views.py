@@ -6,7 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 
 from backend.models import *
+import backend.exceptions as exceptions
 from zabbixapi import ZabbixAPI
+import utils
 
 msgs = {
     #'': 'Template created.',
@@ -45,9 +47,11 @@ def add_hosts_by_group(request):
     za.login()
     hosts = za.hosts_by_group(groups)
     for host in hosts:
-        node = template.create_item(host['host'])
-        if subtemplate:
-            node.link_template(subtemplate)
+        try:
+            node = utils.create_host(template, host['host'], host['hostid'], subtemplate)
+        except exceptions.DuplicateItemError:
+            node = Node.objects.get(paramstr__name = 'zabbix_id', paramstr__value = host['hostid'])
+        utils.update_host_inv(za, node)
     return render_to_response('zabsync/add_hosts.html', {
             'hosts': hosts,
             'debug': repr(hosts)

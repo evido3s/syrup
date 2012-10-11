@@ -19,6 +19,9 @@ class ZabbixAPI():
     def hosts_by_group(self, groups):
         return self.server.host.get(groupids = groups, output = 'extend')
 
+    def items_by_desc(self, hostids, desc):
+        return self.server.item.get(hostids = hostids, output = 'extend', filter = { 'description': desc })
+
     def hist_request(self):
         return jsonrpclib.history.request
 
