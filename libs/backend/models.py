@@ -3,6 +3,12 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 import backend.exceptions as exceptions
 
+nodetype = {
+    'template': 0,
+    'item': 1,
+    'connector': 2,
+}
+
 class Node(models.Model):
     typ = models.IntegerField()
     """node type: 0 - template, 1 - item, 2 - connector"""
@@ -30,6 +36,14 @@ class Node(models.Model):
     def list_primary_templates():
         """List all templates from which objects can be created"""
         return Node.objects.filter(typ = 0).filter(paramstr__primary = True)
+
+    @staticmethod
+    def get_by_name(name, typ):
+        """Return template"""
+        if typ == nodetype['template']:
+            return Node.objects.filter(typ = typ, paramstr__name = 'template_name', paramstr__value = name).get()
+        elif typ == nodetype['item']:
+            return Node.objects.filter(typ = typ, paramstr__primary = True, paramstr__value = name).get()
 
     @staticmethod
     def create_template(name):
@@ -98,8 +112,21 @@ class Node(models.Model):
         return self.paramstr_set.create(template = template, name = name, value = value,
                 primary = primary, structural = structural, static = static)
 
+    def add_or_set_param(self, template, name, value, structural = False, primary = False, static = False):
+        try:
+            param = self.paramstr_set.filter(template = template, name = name)[0]
+        except IndexError:
+            return self.add_param(template, name, value,
+                primary = primary, structural = structural, static = static)
+        else:
+            return param.set_value(value)
+            
+
     def get_params(self, template, name):
-        return self.paramstr_set.filter(template = template, name = name)
+        if template:
+            return self.paramstr_set.filter(template = template, name = name)
+        else:
+            return self.paramstr_set.filter(name = name)
 
     def get_primary_param(self):
         if self.typ == 0:
