@@ -285,8 +285,9 @@ class ParamStr(models.Model):
             elif self.node.typ == 1 and self.primary:
                 raise exceptions.InvalidOperationError('Cannot delete item\'s primary parameter.')
         # if it's template param, remove from all nodes
-        for p in ParamStr.objects.filter(template = self.template).filter(name = self.name).exclude(id = self.id):
-            p.delete()
+        if self.node.typ == 0:
+            for p in ParamStr.objects.filter(template = self.template).filter(name = self.name).exclude(id = self.id):
+                p.delete()
         self.delete()
 
     def update_static_on_nodes(self):
