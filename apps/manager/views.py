@@ -190,10 +190,9 @@ def node_set_param(request):
     node_id = request.POST.get('node_id')
     param_id = request.POST.get('param_id')
     param_value = request.POST.get('param_value')
-    node = Node.objects.get(id = node_id)
+    node = Node.objects.get(id = node_id) # just see if node exists
     param = ParamStr.objects.get(id = param_id)
-    param.value = param_value
-    param.save()
+    param.set_value(param_value)
     return HttpResponseRedirect( reverse('manager.views.message',
             kwargs = {
                 'msg': 'pc',
@@ -331,9 +330,10 @@ def node_table(request):
     for node in node_list:
         fields = list()
         for param in available_params:
-            try:
-                fields.append(node.get_param(param.template, param.name).value)
-            except:
+            node_params = [x.value for x in node.get_params(param.template, param.name)]
+            if node_params:
+                fields.append(', '.join(node_params))
+            else:
                 fields.append(None)
         noderow = {
             'node': node,

@@ -75,7 +75,7 @@ class Node(models.Model):
                 except ObjectDoesNotExist:
                     self.add_param(t, p.name, p.value, static = True)
                 else:
-                    param.value = p.value
+                    param.set_value(p.value, force = True)
 
     def create_item(self, primary_value):
         """should be called on a template, creates instance of the template, returning the new node"""
@@ -97,14 +97,8 @@ class Node(models.Model):
         return self.paramstr_set.create(template = template, name = name, value = value,
                 primary = primary, structural = structural, static = static)
 
-    def set_param(self, template, name, value):
-        param = self.paramstr_set.filter(template = template, name = name).get()
-        param.value = value
-        param.save()
-        return param
-    
-    def get_param(self, template, name):
-        return self.paramstr_set.filter(template = template, name = name).get()
+    def get_params(self, template, name):
+        return self.paramstr_set.filter(template = template, name = name)
 
     def get_primary_param(self):
         if self.typ == 0:
@@ -250,15 +244,26 @@ class ParamStr(models.Model):
     primary = models.BooleanField(default = False)
     static = models.BooleanField(default = False)
 
-    def delete_param(self):
-        if self.structural:
-            # structural parameters cannot be deleted
-            raise
-        elif self.node.typ == 1 and self.primary:
+    def delete_param(self, force = False):
+        # is structural?
+        if not force:
+            # structural?
+            if self.structural:
+                raise exceptions.InvalidOperationError('Cannot delete structural parameter.')
+            # is a static param?
+            elif self.node.typ == 1 and self.static:
+                raise exceptions.InvalidOperationError('Cannot delete static parameter directly.')
             # primary parameter of object
-            raise
-        else:
-            self.delete()
+            elif self.node.typ == 1 and self.primary:
+                raise exceptions.InvalidOperationError('Cannot delete item\'s primary parameter.')
+        self.delete()
+
+    def set_value(self, value, force = False):
+        # is a static param?
+        if not force and self.node.typ == 1 and self.static:
+            raise exceptions.InvalidOperationError('Cannot change static parameter directly.')
+        self.value = value
+        self.save()
 
     def __unicode__(self):
         return u"%s = %s%s%s" % ( self.name, self.value,
