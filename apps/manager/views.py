@@ -42,7 +42,7 @@ def push_message(request, msg):
     try:
         request.session['messages'].append(msg)
     except KeyError:
-        request.session['messages'] = Messages(msg)
+        request.session['messages'] = Messages([msg])
 
 def node_history(f):
     """decorator adding node_history to session"""
