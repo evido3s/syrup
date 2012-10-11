@@ -32,6 +32,18 @@ class NodeHistory():
     def clear(self):
         self.hist = deque(maxlen = self.maxlen)
 
+class Messages(list):
+    def clear(self):
+        """called in templates"""
+        del self[:]
+        return "messages cleared"
+
+def push_message(request, msg):
+    try:
+        request.session['messages'].append(msg)
+    except KeyError:
+        request.session['messages'] = Messages(msg)
+
 def node_history(f):
     """decorator adding node_history to session"""
     def wrapped(*args, **kwargs):
@@ -47,29 +59,6 @@ def node_history(f):
     wrapped.__dict__.update(f.__dict__)
     return wrapped
 
-msgs = {
-    'tc': 'Template created.',
-    'nc': 'Node created.',
-    'nd': 'Node deleted.',
-    'nl': 'Nodes linked.',
-    'nul': 'Nodes unlinked.',
-    'tl': 'Template linked.',
-    'tul': 'Template unlinked.',
-    'pa': 'Parameter added.',
-    'pc': 'Parameter changed.',
-    'pd': 'Parameter deleted.',
-}
-
-def message(request, msg, goto = None):
-    try:
-        msg = msgs[msg]
-    except:
-        pass
-    return render_to_response('manager/message.html', {
-            'msg': msg,
-            'goto': goto,
-            }, context_instance=RequestContext(request))
-
 def redir_main(request):
     return HttpResponseRedirect( reverse('manager.views.main') )
 
@@ -83,12 +72,7 @@ def node_delete(request, node_id):
     node = Node.objects.get(id = node_id)
     node_history.remove_node(node_id)
     node.delete_node()
-    goto = reverse('manager.views.node_list')
-    return HttpResponseRedirect( reverse('manager.views.message',
-            kwargs = {
-                'msg': 'nd',
-                'goto': goto,
-            }))
+    return HttpResponseRedirect(reverse('manager.views.node_list'))
 
 def node_create(request):
     template_id = int(request.POST.get('template_id'))
@@ -100,13 +84,10 @@ def node_create(request):
     node = template.create_item(newname)
     if link_node:
         node.link_with(link_node, direction)
-    return HttpResponseRedirect( reverse('manager.views.message',
+    push_message(request, 'Node created.')
+    return HttpResponseRedirect(reverse('manager.views.node_detail',
             kwargs = {
-                'msg': 'nc',
-                'goto': reverse('manager.views.node_detail',
-                    kwargs = {
-                        'node_id': node.id
-                    })
+                'node_id': node.id
             }))
 
 def template_create(request):
@@ -115,76 +96,57 @@ def template_create(request):
     template = Node.create_template(request.POST.get('newname'))
     if primary_name:
         template.add_param(template, primary_name, primary_value, primary = True)
-    return HttpResponseRedirect( reverse('manager.views.message',
+    push_message(request, 'Template created.')
+    return HttpResponseRedirect(reverse('manager.views.node_detail',
             kwargs = {
-                'msg': 'tc',
-                'goto': reverse('manager.views.node_detail',
-                    kwargs = {
-                        'node_id': template.id
-                    })
+                'node_id': template.id
             }))
 
 def node_link_template(request):
     node = Node.objects.get(id = request.POST.get('node_id'))
     template = Node.objects.get(id = request.POST.get('template_id'))
     node.link_template(template)
-    return HttpResponseRedirect( reverse('manager.views.message',
+    return HttpResponseRedirect(reverse('manager.views.node_detail',
             kwargs = {
-                'msg': 'tl',
-                'goto': reverse('manager.views.node_detail',
-                    kwargs = {
-                        'node_id': node.id
-                    })
+                'node_id': node.id
             }))
 def node_unlink(request, node_id, connector_id):
     node = Node.objects.get(id = node_id)
     connector = Node.objects.get(id = connector_id)
     node.unlink(connector)
-    return HttpResponseRedirect( reverse('manager.views.message',
+    push_message(request, 'Node unlinked.')
+    return HttpResponseRedirect(reverse('manager.views.node_detail',
             kwargs = {
-                'msg': 'nul',
-                'goto': reverse('manager.views.node_detail',
-                    kwargs = {
-                        'node_id': node_id
-                    })
+                'node_id': node_id
             }))
 def node_unlink_template(request, node_id, template_id):
     node = Node.objects.get(id = node_id)
     template = Node.objects.get(id = template_id)
     node.unlink_template(template)
-    return HttpResponseRedirect( reverse('manager.views.message',
+    push_message(request, 'Template unlinked.')
+    return HttpResponseRedirect(reverse('manager.views.node_detail',
             kwargs = {
-                'msg': 'tul',
-                'goto': reverse('manager.views.node_detail',
-                    kwargs = {
-                        'node_id': node.id
-                    })
+                'node_id': node.id
             }))
 def node_link(request):
     node = Node.objects.get(id = request.POST.get('node_id'))
     link_node = Node.objects.get(id = request.POST.get('link_node_id'))
     direction = int(request.POST.get('link_direction'))
     node.link_with(link_node, direction)
-    return HttpResponseRedirect( reverse('manager.views.message',
+    push_message(request, 'Nodes linked.')
+    return HttpResponseRedirect(reverse('manager.views.node_detail',
             kwargs = {
-                'msg': 'nl',
-                'goto': reverse('manager.views.node_detail',
-                    kwargs = {
-                        'node_id': node.id
-                    })
+                'node_id': node.id
             }))
 
 def node_del_param(request, param_id):
     param = ParamStr.objects.get(id = param_id)
     node = param.node
     param.delete_param()
-    return HttpResponseRedirect( reverse('manager.views.message',
+    push_message(request, 'Parameter deleted.')
+    return HttpResponseRedirect(reverse('manager.views.node_detail',
             kwargs = {
-                'msg': 'pd',
-                'goto': reverse('manager.views.node_detail',
-                    kwargs = {
-                        'node_id': node.id
-                    })
+                'node_id': node.id
             }))
 def node_set_param(request):
     node_id = request.POST.get('node_id')
@@ -193,13 +155,10 @@ def node_set_param(request):
     node = Node.objects.get(id = node_id) # just see if node exists
     param = ParamStr.objects.get(id = param_id)
     param.set_value(param_value)
-    return HttpResponseRedirect( reverse('manager.views.message',
+    push_message(request, 'Parameter changed.')
+    return HttpResponseRedirect(reverse('manager.views.node_detail',
             kwargs = {
-                'msg': 'pc',
-                'goto': reverse('manager.views.node_detail',
-                    kwargs = {
-                        'node_id': node_id
-                    })
+                'node_id': node_id
             }))
 def node_add_param(request):
     template_param_id = request.POST.get('param_id')
@@ -208,13 +167,10 @@ def node_add_param(request):
     template_param = ParamStr.objects.get(id = template_param_id)
     node = Node.objects.get(id = node_id)
     node.add_param(template_param.template, template_param.name, param_value)
-    return HttpResponseRedirect( reverse('manager.views.message',
+    push_message(request, 'Parameter added.')
+    return HttpResponseRedirect(reverse('manager.views.node_detail',
             kwargs = {
-                'msg': 'pa',
-                'goto': reverse('manager.views.node_detail',
-                    kwargs = {
-                        'node_id': node.id
-                    })
+                'node_id': node.id
             }))
 def template_add_param(request):
     template_id = request.POST.get('template_id')
@@ -224,13 +180,10 @@ def template_add_param(request):
     static = True if request.POST.get('param_static') == 'x' else False
     template = Node.objects.get(id = template_id)
     template.add_param(template, param_name, param_value, primary = primary, static = static)
-    return HttpResponseRedirect( reverse('manager.views.message',
+    push_message(request, 'Parameter added.')
+    return HttpResponseRedirect(reverse('manager.views.node_detail',
             kwargs = {
-                'msg': 'pa',
-                'goto': reverse('manager.views.node_detail',
-                    kwargs = {
-                        'node_id': template.id
-                    })
+                'node_id': template.id
             }))
 
 def template_new(request):

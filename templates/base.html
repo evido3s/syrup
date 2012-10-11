@@ -44,6 +44,12 @@
   <div class="span1">
   </div>
   <div class="span9">
+      {% for msg in request.session.messages %}
+        <p>{{msg}}</p>
+        {% if forloop.last %}
+          <!--{{request.session.messages.clear}}-->
+        {% endif %}
+      {% endfor %}
       <h1>{% block header %}{% endblock %}</h1>
       <p>{% block content_menu %}{% endblock %}</p>
       {% block content %}{% endblock %}

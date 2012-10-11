@@ -22,7 +22,4 @@ urlpatterns = patterns('manager.views',
     url(r'^template/create$', 'template_create'),
     url(r'^template/addparam$', 'template_add_param'),
     url(r'^node/delparam/(?P<param_id>\d+)$', 'node_del_param'),
-    url(r'^msg/(?P<msg>\w+)$', 'message'),
-    url(r'^msg/(?P<msg>\w+)/(?P<goto>[\w%/]+)$', 'message'),
-    #url(r'^msg/(P<msg>[\d]+)/(P<goto>[\d]+)$', 'message'),
 )
