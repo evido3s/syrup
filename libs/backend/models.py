@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 import backend.exceptions as exceptions
 
@@ -237,7 +238,7 @@ class Node(models.Model):
 
 class ParamStr(models.Model):
     node = models.ForeignKey(Node)
-    template = models.ForeignKey(Node, related_name = '+', blank = True, null = True)
+    template = models.ForeignKey(Node, related_name = '+')
     name = models.CharField(max_length = 64)
     value = models.CharField(max_length = 1024, blank = True, null = True)
     structural = models.BooleanField(default = False)
@@ -256,7 +257,21 @@ class ParamStr(models.Model):
             # primary parameter of object
             elif self.node.typ == 1 and self.primary:
                 raise exceptions.InvalidOperationError('Cannot delete item\'s primary parameter.')
+        # if it's template param, remove from all nodes
+        for p in ParamStr.objects.filter(template = self.template).filter(name = self.name).exclude(id = self.id):
+            p.delete()
         self.delete()
+
+    def update_static_on_nodes(self):
+        if not self.static:
+            raise
+        for n in Node.objects.filter(Q(templates = self.template) | Q(primary_template = self.template)):
+            try:
+                param = n.paramstr_set.filter(template = self.template).filter(name = self.name).get()
+            except ObjectDoesNotExist:
+                n.add_param(self.template, self.name, self.value, static = True)
+            else:
+                param.set_value(self.value, force = True)
 
     def set_value(self, value, force = False):
         # is a static param?
@@ -264,10 +279,14 @@ class ParamStr(models.Model):
             raise exceptions.InvalidOperationError('Cannot change static parameter directly.')
         self.value = value
         self.save()
+        # when changing static template parameter, update all nodes
+        if self.node.typ == 0 and self.static:
+            self.update_static_on_nodes()
 
     def __unicode__(self):
-        return u"%s = %s%s%s" % ( self.name, self.value,
+        return u"%s = %s%s%s%s" % ( self.name, self.value,
                 u" (struct)" if self.structural else u"",
+                u" (static)" if self.structural else u"",
                 u" (primary)" if self.primary else u"")
 
 #class Link(models.Model):
