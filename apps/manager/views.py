@@ -41,6 +41,7 @@ class Messages(list):
 def push_message(request, msg):
     try:
         request.session['messages'].append(msg)
+        request.session.modified = True
     except KeyError:
         request.session['messages'] = Messages([msg])
 
