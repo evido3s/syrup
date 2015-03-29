@@ -1,9 +1,10 @@
 Syrup
 =====
 
+**This project is discontinued and will be removed.**
+
 Open source Configuration Management Database (CMDB) system.
 
-This project is in active development.
 Please visit [Syrup project page](https://github.com/beli-sk/syrup) hosted on GitHub.
 
 Documentation
